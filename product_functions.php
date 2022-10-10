@@ -7,7 +7,7 @@
         //Get image id of stadium
         $stadium_image_id = get_image_id_of_stadium($match["stadium"]);
 
-        echo "Getting stadium image id: " . $stadium_image_id;
+        //echo "Getting stadium image id: " . $stadium_image_id;
 
         $product->set_image_id($stadium_image_id);
     }

@@ -15,6 +15,19 @@
     require_once("generate_match_title.php");
     require_once("product_functions.php");
 
+    //Calculate new stock after qty change in .csv
+    function calculate_new_cat_stock($category_number, WC_Product_Variation $variation, WC_Product_Variable $product, $match){
+        $previous_stock = intval($variation->get_stock_quantity());
+
+        $previous_qty = intval($product->get_meta("cat" . $category_number . "qty"));
+
+        $new_qty = intval($match["cat_" . $category_number . "_qty"]);
+
+        $new_stock = $new_qty - ($previous_qty - $previous_stock);
+
+        $variation->set_stock_quantity($new_stock);
+    }
+
     function generate_updated_category_variation($product, $category_number, $match){
 
         //$variation_id = get_variation_id_by_name($product, "Category " . $category_number);
@@ -66,7 +79,24 @@
         $variation->set_regular_price($match["cat_" . $category_number . "_price"]);
         //$variation->set_manage_stock(true);
         //$variation->set_stock_quantity($match["cat_" . $category_number . "_qty"]);
+        calculate_new_cat_stock($category_number, $variation, $product, $match);
         $variation->save();
+    }
+
+    
+
+    function update_categories_metadata($product, $match){
+        update_category_metadata("1", $product, $match);
+        update_category_metadata("2", $product, $match);
+        update_category_metadata("3", $product, $match);
+        update_category_metadata("4", $product, $match);
+    }
+
+    function update_category_metadata($category_number, WC_Product_Variable $product, $match){
+
+        $qty = $match["cat_" . $category_number . "_qty"];
+
+        $product->update_meta_data("cat" . $category_number . "qty", $qty);
     }
 
     function update_product_from_match($product_id, $match){
@@ -74,11 +104,11 @@
 
         $product->set_name("Tickets " . $match["home_club"] . " vs. " . $match["away_club"]);
 
-        print_r($product->get_variation_attributes());
+        //print_r($product->get_variation_attributes());
 
         set_stadium_image($product, $match);
 
-        echo "<br>";
+        //echo "<br>";
 
         //echo "Variation data: <br>";
         //echo "<pre>";
@@ -89,6 +119,8 @@
         generate_updated_category_variation($product, "3", $match);
         generate_updated_category_variation($product, "2", $match);
         generate_updated_category_variation($product, "1", $match);
+
+        update_categories_metadata($product, $match);
 
         // $variation = new WC_Product_Variation(;
         // $variation->set_parent_id($product->get_id());

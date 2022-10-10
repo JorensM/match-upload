@@ -28,9 +28,9 @@
         //$variation->set_id(intval($category_number));
         $variation->save();
 
-        echo "Variation id: <br>";
-        echo $variation->get_id();
-        echo "<br>";
+        //echo "Variation id: <br>";
+        //echo $variation->get_id();
+        //echo "<br>";
     }
 
     
@@ -148,5 +148,8 @@
 
         $product->save();
 
-        
+        //echo "Product metadata: <br>";
+        //echo "<pre>";
+        //echo print_r($product->get_meta_data());
+        //echo "</pre>";
     }

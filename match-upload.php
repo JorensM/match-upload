@@ -33,7 +33,7 @@ function match_upload_page_html(){
         </form>";
 
     echo
-        "<form action='" . plugin_dir_url(__FILE__) . "test_meta_box2.php" . "' method='post'>
+        "<form action='" . plugin_dir_url(__FILE__) . "test_meta_box.php" . "' method='post'>
             <input type='submit'>Test Meta Box</input>
         </form>";
 }
