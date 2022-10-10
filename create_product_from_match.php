@@ -1,15 +1,9 @@
 <?php
 
-    $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
+    
 
-    require_once( $parse_uri[0] . 'wp-load.php' );  
-
-    if(!class_exists('WC_Product_Variable')){
-        if(function_exists("plugins_url")){
-            include(plugins_url() . '/woocommerce/includes/class-wc-product-variable.php');// adjust the link
-        }
-        
-    }
+    require_once("wp_init.php");
+    require_once("get_image_id_of_stadium.php");
 
     function generate_new_category_variation($product, $category_number, $match){
         //Check if price or qty is zero/undefined, and skip if true
@@ -38,6 +32,30 @@
         echo "<br>";
     }
 
+    
+
+    function get_category_qty($category_number, $match){
+        return $match["cat_" . $category_number . "_qty"];
+    }
+
+    //Add metadata for a single category
+    function add_category_metadata($category_number, WC_Product_Variable $product, $match){
+
+        //Quantity metadata. Used to calculate new stock when category quantity column changes in csv
+        $qty = get_category_qty($category_number, $match);
+        $product->add_meta_data("cat" . $category_number . "qty", $qty);
+
+        $product->save_meta_data();
+    }
+
+    //Add metadata for all categories
+    function add_categories_metadata($product, $match){
+        add_category_metadata("1", $product, $match);
+        add_category_metadata("2", $product, $match);
+        add_category_metadata("3", $product, $match);
+        add_category_metadata("4", $product, $match);
+    }
+
     function create_product_from_match($match){
         $product = new WC_Product_Variable();
 
@@ -47,6 +65,11 @@
         $product->set_name(generate_match_title($match));
         $product->set_sku($match["id"]);
         $product->set_description("Buy tickets for the football match " .  $home_club . " vs. " . $away_club . " and enjoy this exciting game!");
+
+        //Get image id of stadium;
+
+        $stadium_image_id = get_image_id_of_stadium($match["stadium"]);
+        $product->set_image_id($stadium_image_id);
         //$product->set_manage_stock(true);
 
         $attributes = [];
@@ -97,6 +120,8 @@
         generate_new_category_variation($product, "3", $match);
         generate_new_category_variation($product, "2", $match);
         generate_new_category_variation($product, "1", $match);
+
+        add_categories_metadata($product, $match);
 
         // $variation = new WC_Product_Variation();
         // $variation->set_parent_id($product->get_id());
