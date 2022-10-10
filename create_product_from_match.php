@@ -4,6 +4,7 @@
 
     require_once("wp_init.php");
     require_once("get_image_id_of_stadium.php");
+    require_once("product_functions.php");
 
     function generate_new_category_variation($product, $category_number, $match){
         //Check if price or qty is zero/undefined, and skip if true
@@ -66,10 +67,7 @@
         $product->set_sku($match["id"]);
         $product->set_description("Buy tickets for the football match " .  $home_club . " vs. " . $away_club . " and enjoy this exciting game!");
 
-        //Get image id of stadium;
-
-        $stadium_image_id = get_image_id_of_stadium($match["stadium"]);
-        $product->set_image_id($stadium_image_id);
+        set_stadium_image($product, $match);
         //$product->set_manage_stock(true);
 
         $attributes = [];

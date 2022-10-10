@@ -13,6 +13,7 @@
 
     require_once("get_variation_by_name.php");
     require_once("generate_match_title.php");
+    require_once("product_functions.php");
 
     function generate_updated_category_variation($product, $category_number, $match){
 
@@ -30,12 +31,12 @@
         $is_new_variation = false;
 
         if($variation === null){
-            echo "Variation " . $category_number . " was null <br>";
+            //echo "Variation " . $category_number . " was null <br>";
             $variation = new WC_Product_Variation();
             $variation->set_parent_id($product->get_id());
             $is_new_variation = true;
         }else{
-            echo "Variation " . $category_number . " already exists";
+            //echo "Variation " . $category_number . " already exists";
         }
 
         //$variation = new WC_Product_Variation()
@@ -61,7 +62,7 @@
 
         
         $variation->set_attributes(array(sanitize_title("Seat Category") => "Category " . strval($category_number)));
-        echo "Setting price for variation " . $variation->get_id() . " to " . $match["cat_" . $category_number . "_price"];
+        //echo "Setting price for variation " . $variation->get_id() . " to " . $match["cat_" . $category_number . "_price"];
         $variation->set_regular_price($match["cat_" . $category_number . "_price"]);
         //$variation->set_manage_stock(true);
         //$variation->set_stock_quantity($match["cat_" . $category_number . "_qty"]);
@@ -74,6 +75,8 @@
         $product->set_name("Tickets " . $match["home_club"] . " vs. " . $match["away_club"]);
 
         print_r($product->get_variation_attributes());
+
+        set_stadium_image($product, $match);
 
         echo "<br>";
 

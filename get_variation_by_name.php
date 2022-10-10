@@ -29,7 +29,7 @@ function get_variation_by_name(WC_Product_Variable $product, $variation_name){
         // echo print_r($variation);
         // echo "</pre>";
         // echo $variation->get_name() . "<br>";
-        echo "Checking if variation name (" . $variation->get_name() . ") equals (" . $variation_name . ")<br>";
+        //echo "Checking if variation name (" . $variation->get_name() . ") equals (" . $variation_name . ")<br>";
         if($variation->get_name() === $variation_name){
             return $variation;
         }
