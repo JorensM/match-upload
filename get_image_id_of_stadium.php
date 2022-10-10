@@ -6,7 +6,7 @@
         $final_str = mb_strtolower($stadium_name);
         $final_str = str_replace(" ", "", $final_str);
 
-        $upload_dir = wp_upload_dir()["url"] . "/2022/07/";
+        $upload_dir = wp_upload_dir()["url"] . "/";// . "/2022/07/";
 
         $final_url = $upload_dir . $final_str . ".svg";
 
