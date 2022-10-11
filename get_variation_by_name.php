@@ -21,7 +21,7 @@ if(!class_exists('WC_Product_Variation')){
 
 require_once("generate_match_title.php");
 
-function get_variation_by_name(WC_Product_Variable $product, $variation_name){
+function get_variation_by_name(WC_Product_Variable $product, $variation_name): WC_Product_Variation{
     $variations = $product->get_available_variations("objects");
     foreach($variations as $variation){
         // echo "Getting variation name: <br>";

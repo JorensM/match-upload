@@ -5,8 +5,12 @@
     require_once("wp_init.php");
     require_once("get_image_id_of_stadium.php");
     require_once("product_functions.php");
+    require_once("generate_match_metadata.php");
+    require_once("const.php");
 
     function generate_new_category_variation($product, $category_number, $match){
+        global $MANAGE_STOCK;
+
         //Check if price or qty is zero/undefined, and skip if true
         $price = strval($match["cat_" . $category_number . "_price"]);
         $qty = strval($match["cat_" . $category_number . "_qty"]);
@@ -21,8 +25,12 @@
         $variation->set_parent_id($product->get_id());
         $variation->set_attributes(array(sanitize_title("Seat Category") => "Category " . strval($category_number)));
         $variation->set_regular_price($match["cat_" . $category_number . "_price"]);
-        $variation->set_manage_stock(true);
-        $variation->set_stock_quantity($match["cat_" . $category_number . "_qty"]);
+        if($MANAGE_STOCK){
+            $variation->set_manage_stock(true);
+            $variation->set_stock_quantity($match["cat_" . $category_number . "_qty"]);
+        }
+        
+        
         $variation->set_name("Category " . strval($category_number));
         
         //$variation->set_id(intval($category_number));
@@ -120,6 +128,7 @@
         generate_new_category_variation($product, "1", $match);
 
         add_categories_metadata($product, $match);
+        add_general_metadata($product, $match);
 
         // $variation = new WC_Product_Variation();
         // $variation->set_parent_id($product->get_id());

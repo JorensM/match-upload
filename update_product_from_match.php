@@ -14,6 +14,7 @@
     require_once("get_variation_by_name.php");
     require_once("generate_match_title.php");
     require_once("product_functions.php");
+    require_once("const.php");
 
     //Calculate new stock after qty change in .csv
     function calculate_new_cat_stock($category_number, WC_Product_Variation $variation, WC_Product_Variable $product, $match){
@@ -29,6 +30,8 @@
     }
 
     function generate_updated_category_variation($product, $category_number, $match){
+        global $MANAGE_STOCK;
+
 
         //$variation_id = get_variation_id_by_name($product, "Category " . $category_number);
 
@@ -79,7 +82,13 @@
         $variation->set_regular_price($match["cat_" . $category_number . "_price"]);
         //$variation->set_manage_stock(true);
         //$variation->set_stock_quantity($match["cat_" . $category_number . "_qty"]);
-        calculate_new_cat_stock($category_number, $variation, $product, $match);
+        if($MANAGE_STOCK){
+            $variation->set_manage_stock(true);
+            calculate_new_cat_stock($category_number, $variation, $product, $match);
+        }else{
+            $variation->set_manage_stock(false);
+        }
+        
         $variation->save();
     }
 
@@ -121,6 +130,7 @@
         generate_updated_category_variation($product, "1", $match);
 
         update_categories_metadata($product, $match);
+        add_general_metadata($product, $match, true);
 
         // $variation = new WC_Product_Variation(;
         // $variation->set_parent_id($product->get_id());

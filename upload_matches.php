@@ -31,23 +31,23 @@
 
     foreach($matches_arr as $index => $match){
 
-        if($index > 5){
-            break;
-        }
+        //if($index > 5){
+            //break;
+        //}
 
-        //echo "<br>-----------<br>";
+        echo "<br>-----------<br>";
 
-        //echo generate_match_title($match) . " - " . $match["match_date"] . "<br>";
+        echo generate_match_title($match) . " - " . $match["match_date"] . "<br>";
 
         if(product_exists($match)){
-            //echo "Product already exists, updating...<br>";
+            echo "Product already exists, updating...<br>";
             update_product_from_match(wc_get_product_id_by_sku($match["id"]), $match);
         }else{
-            //echo "Product doesn't exist, adding...<br>";
+            echo "Product doesn't exist, adding...<br>";
             create_product_from_match($match);
         }
 
-        //echo "------------<br>";
+        echo "------------<br>";
 
         //create_product_from_match($match);
     }
