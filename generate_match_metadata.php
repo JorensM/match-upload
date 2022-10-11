@@ -30,8 +30,6 @@
         $team_1_img_url = $team_img_urls[0];
         $team_2_img_url = $team_img_urls[1];
 
-        //echo "Team 1 img url: " . $team_1_img_url . "<br>";
-
         return array(
             "match-description" => $match_description,
             "match-date" => $match_date,

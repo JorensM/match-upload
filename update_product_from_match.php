@@ -32,27 +32,21 @@
     function generate_updated_category_variation($product, $category_number, $match){
         global $MANAGE_STOCK;
 
-
         //$variation_id = get_variation_id_by_name($product, "Category " . $category_number);
 
         $variation_name = generate_match_title($match) . " - " . "Category " . $category_number;
 
         $variation = get_variation_by_name($product, $variation_name);
-
-        // echo "Variation variable: <br><pre>";
-        // echo print_r($variation);
-        // echo "</pre>";
         
 
         $is_new_variation = false;
 
         if($variation === null){
-            //echo "Variation " . $category_number . " was null <br>";
             $variation = new WC_Product_Variation();
             $variation->set_parent_id($product->get_id());
             $is_new_variation = true;
         }else{
-            //echo "Variation " . $category_number . " already exists";
+            
         }
 
         //$variation = new WC_Product_Variation()
@@ -78,7 +72,6 @@
 
         
         $variation->set_attributes(array(sanitize_title("Seat Category") => "Category " . strval($category_number)));
-        //echo "Setting price for variation " . $variation->get_id() . " to " . $match["cat_" . $category_number . "_price"];
         $variation->set_regular_price($match["cat_" . $category_number . "_price"]);
         //$variation->set_manage_stock(true);
         //$variation->set_stock_quantity($match["cat_" . $category_number . "_qty"]);
@@ -110,19 +103,9 @@
 
     function update_product_from_match($product_id, $match){
         $product = new WC_Product_Variable($product_id);
-
         $product->set_name("Tickets " . $match["home_club"] . " vs. " . $match["away_club"]);
 
-        //print_r($product->get_variation_attributes());
-
         set_stadium_image($product, $match);
-
-        //echo "<br>";
-
-        //echo "Variation data: <br>";
-        //echo "<pre>";
-        //print_r($product->get_available_variations());
-        //echo "</pre>";
 
         generate_updated_category_variation($product, "4", $match);
         generate_updated_category_variation($product, "3", $match);
@@ -134,8 +117,5 @@
 
         // $variation = new WC_Product_Variation(;
         // $variation->set_parent_id($product->get_id());
-        // print_r($variation->get_attributes("view"));
-        // echo "<br>";
-
         $product->save();
     }

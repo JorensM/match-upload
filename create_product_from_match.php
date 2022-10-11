@@ -36,9 +36,6 @@
         //$variation->set_id(intval($category_number));
         $variation->save();
 
-        //echo "Variation id: <br>";
-        //echo $variation->get_id();
-        //echo "<br>";
     }
 
     
@@ -93,14 +90,6 @@
         $attribute->set_variation(true);
         // $attribute->set_position(0);
         $attribute->set_visible(true);
-
-        // echo "Attribute slugs: <br>";
-        // print_r($attribute->get_slugs());
-        // echo "<br>";
-        // echo "Attribute taxonomy: <br>";
-        // print_r($attribute->get_taxonomy());
-        // echo "<br>Attribute name:<br>";
-        // echo $attribute->get_name();
 
         $attributes[] = $attribute;
 
@@ -157,8 +146,4 @@
 
         $product->save();
 
-        //echo "Product metadata: <br>";
-        //echo "<pre>";
-        //echo print_r($product->get_meta_data());
-        //echo "</pre>";
     }

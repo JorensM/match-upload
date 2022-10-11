@@ -10,8 +10,6 @@
 
         $final_url = $upload_dir . $final_str . ".svg";
 
-        //echo "Getting image id from url: " . $final_url . "<br>";
-
         $image_id = attachment_url_to_postid($final_url);
 
         return $image_id;

@@ -16,7 +16,7 @@
         if($product_id === 0 ){
             return false;
         }else{
-            //echo "Product id: " . $product_id . "<br>";
+           
             return true;
         }
     }

@@ -8,8 +8,6 @@
         //Get image id of stadium
         $stadium_image_id = get_image_id_of_stadium($match["stadium"]);
 
-        //echo "Getting stadium image id: " . $stadium_image_id;
-
         $product->set_image_id($stadium_image_id);
     }
 
@@ -28,7 +26,6 @@
         if(!$update){
             $product->add_meta_data("match-date", $metadata["match-date"]);
             $product->add_meta_data("tickets_products-page-short-details", $metadata["match-description"]);
-            //echo "Setting championship name: " . $metadata["match-tournament"] . "<br>";
             $product->add_meta_data("championship-name", $metadata["match-tournament"]);
             $product->add_meta_data("date-confirm", $metadata["match-date-confirm"]);
             $product->add_meta_data("1st-team-image", $metadata["team1-img"]);

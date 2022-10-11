@@ -5,7 +5,6 @@
         $row = 1;
         while(($data = fgetcsv($file_handle, 10000, ",")) !== FALSE){
             $num = count($data);
-            //echo "<br> $num fields on row $row <br>";
 
             if($row > 1){
                 $match = [];
@@ -36,7 +35,7 @@
 
             $row++;
             for($i = 0; $i < $num; $i++){
-                //echo $data[$i] . "<br>";
+                
             }
             
         }

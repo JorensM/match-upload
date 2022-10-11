@@ -4,8 +4,6 @@
 
     //$products = wc_get_products(array("limit" => 10));
 
-    echo "hello";
-
     $data = array(
         'field1' => 'field1value',
         'field2' => 'field2value',
@@ -27,7 +25,3 @@
     //return json_decode($resultStr, true);
 
     $output = json_decode($products, true);
-
-    echo "<pre>";
-    echo print_r($output);
-    echo "</pre>";

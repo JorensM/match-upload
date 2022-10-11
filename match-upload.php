@@ -32,10 +32,10 @@ function match_upload_page_html(){
             <input type='submit'>Upload</input>
         </form>";
 
-    echo
-        "<form action='" . plugin_dir_url(__FILE__) . "test_meta_box.php" . "' method='post'>
-            <input type='submit'>Test Meta Box</input>
-        </form>";
+    // echo
+    //     "<form action='" . plugin_dir_url(__FILE__) . "test_meta_box.php" . "' method='post'>
+    //         <input type='submit'>Test Meta Box</input>
+    //     </form>";
 }
 
 //Enqueue styles
