@@ -71,6 +71,8 @@
         $product->set_name(generate_match_title($match));
         $product->set_sku($match["id"]);
         $product->set_description("Buy tickets for the football match " .  $home_club . " vs. " . $away_club . " and enjoy this exciting game!");
+        set_product_categories($product, $match);
+
 
         set_stadium_image($product, $match);
         //$product->set_manage_stock(true);

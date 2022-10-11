@@ -24,6 +24,7 @@ add_action("admin_menu", "match_upload_settings_page");
 //Settings page HTML
 function match_upload_page_html(){
     global $UPLOAD_MATCHES_ACTION_URL;
+    global $LOAD_PROGRESS_URL;
 
     echo 
         "<form id='match-upload-form' class='upload-form' action='" . $UPLOAD_MATCHES_ACTION_URL . "' method='post' enctype='multipart/form-data'>
@@ -33,51 +34,98 @@ function match_upload_page_html(){
         </form>
         <span id='match-upload-error' class='match-upload-error'></span>
         <div class='match-upload-progress'>
-            40/300
-            Tickets xxx
-            Updating...
+            <span id='progress-index'></span><br>
+            <span id='progress-title'></span><br>
+            <span id='progress-status'></span><br>
+            <span id='progress-end'></span><br>
         </div>
         <script>
             let error_element = document.getElementById('match-upload-error');
 
+            let progress_end_element = document.getElementById('progress-end');
+
             function upload_matches(){
                 error_element.innerHTML = '';
                 let file = document.getElementById('match-upload-file').files[0];
-                console.log('file: ');
-                console.log(file);
-
-                
-
-                console.log(formData);
 
                 if(file === undefined){
                     error_element.innerHTML = 'Please select a file';
                     return;
                 }
 
-                formData = new FormData();
+                const formData = new FormData();
                 formData.append('matches-file', file);
-
-                console.log(formData);
 
                 var request = new Request('" . $UPLOAD_MATCHES_ACTION_URL . "',
                     {
                         method: 'POST',
                         body: formData,
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
+                        credentials: 'same-origin'
+                        // headers: {
+                        //     'Content-Type': 'multipart/form-data'
+                        // }
+                    }
+                )
+                
+                
+                let interval = setInterval(get_progress, 1000);
+                console.log('interval: ');
+                console.log(interval);
+                
+                clear_progress();
+
+                fetch(request)
+                .then(response => {return response.json()})
+                .then(data => {
+                    console.log(data);
+                    clearInterval(interval);
+                    clear_progress();
+                    progress_end_element.innerHTML = 'sucessfully added products, you may now leave this page';
+                })
+                .catch(err => {
+                    console.log(err);
+                    clearInterval(interval);
+
+                    progress_end_element.innerHTML = 'an error occured';
+                });
+            }
+
+            function get_progress(){
+                var request = new Request('" . $LOAD_PROGRESS_URL. "',
+                    {
+                        method: 'POST',
+                        credentials: 'same-origin'
                     }
                 )
 
                 fetch(request)
-                .then(response => response.json())
+                .then(response => {return response.json()})
                 .then(data => {
+                    console.log('progress data: ');
                     console.log(data);
+                    render_progress(data.index, data.title, data.new);
                 })
                 .catch(err => {
+                    console.log('err');
                     console.log(err);
                 });
+            }
+
+            function render_progress(index, title, status){
+                document.getElementById('progress-index').innerHTML = index;
+                document.getElementById('progress-title').innerHTML = title;
+                if(status === true){
+                    document.getElementById('progress-status').innerHTML = 'Product doesn\'t exist, adding';
+                }else{
+                    document.getElementById('progress-status').innerHTML = 'Product already exists, updating';
+                }
+            }
+
+            function clear_progress(){
+                document.getElementById('progress-index').innerHTML = '';
+                document.getElementById('progress-title').innerHTML = '';
+                document.getElementById('progress-status').innerHTML = '';
+                progress_end_element.innerHTML = '';
             }
         </script>
         ";

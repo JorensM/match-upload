@@ -1,6 +1,8 @@
 <?php
 
-    echo json_encode(["test",$_FILES]);
+    //session_start();
+
+    ini_set('max_execution_time', 0);
 
     require_once("matches_csv_to_arr.php");
     require_once("create_product_from_match.php");
@@ -35,17 +37,32 @@
 
     foreach($matches_arr as $index => $match){
 
-        if($index > 5){
-            break;
-        }
+        session_start();
+
+        //if($index > 200){
+            //break;
+        //}
+
+        $new = false;        
 
         if(product_exists($match)){
             update_product_from_match(wc_get_product_id_by_sku($match["id"]), $match);
         }else{
+            $new = true;
             create_product_from_match($match);
         }
+
+        $_SESSION["progress_data"] = [
+            "index" => $index . "/" . count($matches_arr),
+            "title" => generate_match_title($match) . " - " . $match["match_date"],
+            "new" => $new
+        ];
+
+        session_write_close();
+        //ob_flush(); 
+        //flush(); 
 
         //create_product_from_match($match);
     }
 
-    //echo json_encode("success");
+    echo json_encode("success");

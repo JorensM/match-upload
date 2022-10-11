@@ -104,6 +104,8 @@
     function update_product_from_match($product_id, $match){
         $product = new WC_Product_Variable($product_id);
         $product->set_name("Tickets " . $match["home_club"] . " vs. " . $match["away_club"]);
+        set_product_categories($product, $match);
+
 
         set_stadium_image($product, $match);
 

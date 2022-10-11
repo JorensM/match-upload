@@ -30,6 +30,7 @@
             $product->add_meta_data("date-confirm", $metadata["match-date-confirm"]);
             $product->add_meta_data("1st-team-image", $metadata["team1-img"]);
             $product->add_meta_data("2nd-team-image", $metadata["team2-img"]);
+            $product->add_meta_data("match-location", $metadata["match-location"]);
         }else{
             $product->update_meta_data("match-date", $metadata["match-date"]);
             $product->update_meta_data("tickets_products-page-short-details", $metadata["match-description"]);
@@ -37,7 +38,16 @@
             $product->update_meta_data("date-confirm", $metadata["match-date-confirm"]);
             $product->update_meta_data("1st-team-image", $metadata["team1-img"]);
             $product->update_meta_data("2nd-team-image", $metadata["team2-img"]);
+            $product->update_meta_data("match-location", $metadata["match-location"]);
         }
 
         $product->save_meta_data();
+    }
+
+    function set_product_categories($product, $match){
+        $term = get_term_by('name', $match["home_club"], 'product_cat');
+
+        $category_id = $term->term_id;
+
+        $product->set_category_ids([$category_id]);
     }

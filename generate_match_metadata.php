@@ -29,12 +29,14 @@
         $team_img_urls = generate_team_img_filenames($match);
         $team_1_img_url = $team_img_urls[0];
         $team_2_img_url = $team_img_urls[1];
+        $location = $match["stadium"];
 
         return array(
             "match-description" => $match_description,
             "match-date" => $match_date,
             "match-tournament" => $match_tournament,
             "match-date-confirm" => $match_date_confirm,
+            "match-location" => $location,
             "team1-img" => $team_1_img_url,
             "team2-img" => $team_2_img_url
         );
