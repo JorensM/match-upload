@@ -3,3 +3,7 @@
     flex-direction: column;
     width: 300px;
 }
+
+.match-upload-progress{
+    width: 400px;
+}

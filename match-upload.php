@@ -28,9 +28,46 @@ function match_upload_page_html(){
     echo 
         "<form class='upload-form' action='" . $UPLOAD_MATCHES_ACTION_URL . "' method='post' enctype='multipart/form-data'>
             <label for='matches-file'>Upload matches file</label>
-            <input type='file' name='matches-file' required>
-            <input type='submit'>Upload</input>
-        </form>";
+            <input id='match-upload-file' type='file' name='matches-file' required>
+            <button type='button' onclick='upload_matches()'>Upload</button>
+        </form>
+        <span id='match-upload-error' class='match-upload-error'></span>
+        <div class='match-upload-progress'>
+            40/300
+            Tickets xxx
+            Updating...
+        </div>
+        <script>
+            let error_element = document.getElementById('match-upload-error');
+
+            function upload_matches(){
+                error_element.innerHTML = '';
+                let file = document.getElementById('match-upload-file').files[0];
+                console.log('file: ');
+                console.log(file);
+
+                if(file === undefined){
+                    error_element.innerHTML = 'Please select a file';
+                    return;
+                }
+
+                var request = new Request('" . $UPLOAD_MATCHES_ACTION_URL . "',
+                    {
+                        method: 'POST',
+                        body: 'test'
+                    }
+                )
+
+                fetch(request)
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+            }
+        </script>
+        ";
 
     // echo
     //     "<form action='" . plugin_dir_url(__FILE__) . "test_meta_box.php" . "' method='post'>
