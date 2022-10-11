@@ -59,8 +59,9 @@ function match_upload_page_html(){
                 )
 
                 fetch(request)
-                .then(response => {
-                    console.log(response);
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
                 })
                 .catch(err => {
                     console.log(err);
