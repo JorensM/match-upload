@@ -26,7 +26,7 @@ function match_upload_page_html(){
     global $UPLOAD_MATCHES_ACTION_URL;
 
     echo 
-        "<form class='upload-form' action='" . $UPLOAD_MATCHES_ACTION_URL . "' method='post' enctype='multipart/form-data'>
+        "<form id='match-upload-form' class='upload-form' action='" . $UPLOAD_MATCHES_ACTION_URL . "' method='post' enctype='multipart/form-data'>
             <label for='matches-file'>Upload matches file</label>
             <input id='match-upload-file' type='file' name='matches-file' required>
             <button type='button' onclick='upload_matches()'>Upload</button>
@@ -46,15 +46,27 @@ function match_upload_page_html(){
                 console.log('file: ');
                 console.log(file);
 
+                
+
+                console.log(formData);
+
                 if(file === undefined){
                     error_element.innerHTML = 'Please select a file';
                     return;
                 }
 
+                formData = new FormData();
+                formData.append('matches-file', file);
+
+                console.log(formData);
+
                 var request = new Request('" . $UPLOAD_MATCHES_ACTION_URL . "',
                     {
                         method: 'POST',
-                        body: 'test'
+                        body: formData,
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
                     }
                 )
 
