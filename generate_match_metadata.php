@@ -30,6 +30,7 @@
         $team_1_img_url = $team_img_urls[0];
         $team_2_img_url = $team_img_urls[1];
         $location = $match["stadium"];
+        $time = $match["match_time"];
 
         return array(
             "match-description" => $match_description,
@@ -37,6 +38,7 @@
             "match-tournament" => $match_tournament,
             "match-date-confirm" => $match_date_confirm,
             "match-location" => $location,
+            "match-time" => $time,
             "team1-img" => $team_1_img_url,
             "team2-img" => $team_2_img_url
         );

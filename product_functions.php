@@ -31,6 +31,7 @@
             $product->add_meta_data("1st-team-image", $metadata["team1-img"]);
             $product->add_meta_data("2nd-team-image", $metadata["team2-img"]);
             $product->add_meta_data("match-location", $metadata["match-location"]);
+            $product->add_meta_data("match-time", $metadata["match-time"]);
         }else{
             $product->update_meta_data("match-date", $metadata["match-date"]);
             $product->update_meta_data("tickets_products-page-short-details", $metadata["match-description"]);
@@ -39,6 +40,7 @@
             $product->update_meta_data("1st-team-image", $metadata["team1-img"]);
             $product->update_meta_data("2nd-team-image", $metadata["team2-img"]);
             $product->update_meta_data("match-location", $metadata["match-location"]);
+            $product->update_meta_data("match-time", $metadata["match-time"]);
         }
 
         $product->save_meta_data();
