@@ -5,14 +5,14 @@
 
     //FC Barcelona = fcbarcelona
     function cleanstr($str) {
-        $new_string = urlencode(strtolower(str_replace(" ","",preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities($str)))));
+        $new_string = urlencode(strtolower(str_replace(" ","",preg_replace("/([a-z])[a-z]+;/i", "$1", htmlentities($str)))));
         $newer_string = preg_replace('/[^A-Za-z0-9\-]/', '', $new_string);
         return $newer_string;
     }
 
     //FC Barcelona = FCBarcelona
     function cleanstr2($str){
-        $new_string = urlencode(str_replace(" ","",preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities($str))));
+        $new_string = urlencode(str_replace(" ","",preg_replace("/([a-z])[a-z]+;/i", "$1", htmlentities($str))));
         $newer_string = preg_replace('/[^A-Za-z0-9\-]/', '', $new_string);
         return $newer_string;
     }
