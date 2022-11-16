@@ -6,6 +6,8 @@
 
 .match-upload-progress{
     width: 400px;
+    display: flex;
+    flex-direction: column;
 }
 
 .match-upload-logs{

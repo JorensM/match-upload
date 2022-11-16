@@ -48,8 +48,10 @@
 
     function set_product_categories($product, $match){
         $term = get_term_by('name', $match["home_club"], 'product_cat');
+        $term2 = get_term_by('name', $match["tournament"], 'product_cat');
 
-        $category_id = $term->term_id;
+        $category_ids = [$term->term_id, $term2->term_id];
 
-        $product->set_category_ids([$category_id]);
+        $product->set_category_ids($category_ids);
+        return [$term2, $match["tournament"]];
     }

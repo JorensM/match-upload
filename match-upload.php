@@ -18,6 +18,7 @@ function match_upload_settings_init(){
 function match_upload_settings_page(){
     add_menu_page("Match Upload", "Match Upload", "manage_options", "match_upload_page", "match_upload_page_html");
     add_submenu_page("match_upload_page", "Logs", "Logs", "manage_options", "match_upload_logs", "match_upload_logs_html");
+    add_submenu_page("match_upload_page", "Options", "Options", "manage_options", "match_upload_options", "match_upload_options_html");
 }
 
 add_action("admin_menu", "match_upload_settings_page");
@@ -33,21 +34,34 @@ function match_upload_page_html(){
         "<form id='match-upload-form' class='upload-form' action='" . $UPLOAD_MATCHES_ACTION_URL . "' method='post' enctype='multipart/form-data'>
             <label for='matches-file'>Upload matches file</label>
             <input id='match-upload-file' type='file' name='matches-file' required>
+            <br>
+            <div style='display: flex;align-items: center;'>
+                <input type='checkbox' id='write-logs' name='write-logs' checked>
+                <label for='write-logs'>Write logs</label>
+            </div>
+            <br>
             <button type='button' onclick='upload_matches()'>Upload</button>
         </form>
         <button id='cancel-button' type='button' onclick='cancel_upload()' style='display: none'>Cancel</button>
         <span id='match-upload-error' class='match-upload-error'></span>
-        <div class='match-upload-progress'>
+        <div class='match-upload-progress' id='match-upload-progress'>
             <span id='progress-index'></span><br>
             <span id='progress-title'></span><br>
             <span id='progress-status'></span><br>
+            <span>Time elapsed: <span id='progress-time'></span> seconds</span><br>
+        </div>
+        <div id='match-upload-end' style='flex-direction: column'>
             <span id='progress-end'></span><br>
+            <span>Time to complete: <span id='progress-end-time'></span> seconds<span><br>
         </div>
         <script>
             let error_element = document.getElementById('match-upload-error');
 
             let progress_end_element = document.getElementById('progress-end');
             matchUploadForm = document.getElementById('match-upload-form');
+            progressDiv = document.getElementById('match-upload-progress');
+            progressDiv.style.display = 'none';
+            
 
             window.onload = () => {
                 let interval = setInterval(get_progress, 1000);
@@ -73,6 +87,7 @@ function match_upload_page_html(){
             function upload_matches(){
                 error_element.innerHTML = '';
                 let file = document.getElementById('match-upload-file').files[0];
+                const write_logs = document.getElementById('write-logs').checked;
 
                 if(file === undefined){
                     error_element.innerHTML = 'Please select a file';
@@ -81,6 +96,9 @@ function match_upload_page_html(){
 
                 const formData = new FormData();
                 formData.append('matches-file', file);
+                console.log('write_logs: ');
+                console.log(write_logs);
+                formData.append('write-logs', write_logs);
 
                 var request = new Request('" . $UPLOAD_MATCHES_ACTION_URL . "',
                     {
@@ -129,7 +147,7 @@ function match_upload_page_html(){
                 .then(data => {
                     console.log('progress data: ');
                     console.log(data);
-                    render_progress(data.index, data.title, data.new, data.started, data.finished);
+                    render_progress(data.index, data.title, data.new, data.started, data.finished, data.start_time, data.end_time);
                 })
                 .catch(err => {
                     console.log('err');
@@ -137,19 +155,32 @@ function match_upload_page_html(){
                 });
             }
 
-            function render_progress(index, title, status, started, finished){
+            function render_progress(index, title, status, started, finished, start_time, end_time){
                 indexElement = document.getElementById('progress-index');
                 titleElement = document.getElementById('progress-title');
                 statusElement = document.getElementById('progress-status');
                 cancelButton = document.getElementById('cancel-button');
+                progressTimeElement = document.getElementById('progress-time');
+                progressEndDiv = document.getElementById('match-upload-end');
                 
 
+                progressEndDiv.style.display = 'none';
+
+                console.log(start_time);
+                console.log(end_time);
+
+                progressEndTimeElement = document.getElementById('progress-end-time');
+
                 if(finished){
+                    progressEndDiv.style.display = 'flex';
                     document.getElementById('progress-end').innerHTML = 'Upload complete!';
                     cancelButton.style.display = 'none';
                     matchUploadForm.style.display = 'flex';
+                    progressEndTimeElement.innerHTML = end_time - start_time;
+                    progressDiv.style.display = 'none';
                 }
                 if(started){
+                    progressDiv.style.display = 'flex';
                     cancelButton.style.display = 'block';
                     matchUploadForm.style.display = 'none';
                     document.getElementById('progress-index').innerHTML = index;
@@ -159,6 +190,8 @@ function match_upload_page_html(){
                     }else{
                         document.getElementById('progress-status').innerHTML = 'Product already exists, updating';
                     }
+
+                    progressTimeElement.innerHTML = end_time - start_time;
                 }else{
                     cancelButton.style.display = 'none';
                     indexElement.innerHTML = '';
@@ -232,10 +265,35 @@ function match_upload_logs_html(){
     ";
 }
 
+function match_upload_options_html(){
+    global $MISSING_FILES_URL;
+    global $MISSING_DATA_URL;
+    global $APPLY_SEO_URL;
+
+    echo "
+        <h1>Options</h1>
+        <a href='" . $MISSING_FILES_URL . "'>View missing files</a><br>
+        <a href='" . $MISSING_DATA_URL ."'>View missing data</a>
+        <a href='" . $APPLY_SEO_URL . "'>Apply SEO</a>
+    ";
+}
+
 //Enqueue styles
 function match_upload_init_styles(){
     wp_enqueue_style("match-upload-style", plugin_dir_url(__FILE__) . "/style.css");
 }
 add_action("admin_enqueue_scripts", "match_upload_init_styles");
+
+//Apply meta descriptions to products
+function mts_apply_metadesc($desc){
+    $post = get_post();
+    if($post->post_type === "product"){
+        //echo "is product";
+        //echo $post->post_content;
+        return $post->post_content;
+    }
+}
+
+add_filter("wpseo_metadesc", "mts_apply_metadesc");
 
 

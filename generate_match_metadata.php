@@ -3,16 +3,31 @@
     require_once("wp_init.php");    
     require_once("product_functions.php");
 
+    function replace_umlauts($str){
+        $new_str = $str;
+        $new_str = str_replace("ë", "e", $new_str);
+        $new_str = str_replace("ö", "o", $new_str);
+        $new_str = str_replace("ü", "u", $new_str);
+
+        return $new_str;
+    }
+
     //FC Barcelona = fcbarcelona
     function cleanstr($str) {
-        $new_string = urlencode(strtolower(str_replace(" ","",preg_replace("/([a-z])[a-z]+;/i", "$1", htmlentities($str)))));
+        $new_string = $str;
+        $new_string = replace_umlauts($new_string);
+        $new_string = str_replace("&", "", $new_string);
+        $new_string = urlencode(strtolower(str_replace(" ","",preg_replace("/([a-z])[a-z]+;/i", "$1", htmlentities($new_string)))));
         $newer_string = preg_replace('/[^A-Za-z0-9\-]/', '', $new_string);
         return $newer_string;
     }
 
     //FC Barcelona = FCBarcelona
     function cleanstr2($str){
-        $new_string = urlencode(str_replace(" ","",preg_replace("/([a-z])[a-z]+;/i", "$1", htmlentities($str))));
+        $new_string = $str;
+        $new_string = replace_umlauts($new_string);
+        $new_string = str_replace("&", "", $new_string);
+        $new_string = urlencode(str_replace(" ","",preg_replace("/([a-z])[a-z]+;/i", "$1", htmlentities($new_string))));
         $newer_string = preg_replace('/[^A-Za-z0-9\-]/', '', $new_string);
         return $newer_string;
     }
