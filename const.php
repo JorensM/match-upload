@@ -7,5 +7,8 @@
     $MISSING_FILES_URL = plugin_dir_url(__FILE__) . "view_missing_files.php";
     $MISSING_DATA_URL = plugin_dir_url(__FILE__) . "view_missing_data.php";
     $APPLY_SEO_URL = plugin_dir_url(__FILE__) . "apply_seo.php";
+    $UPDATE_PRODUCT_VISIBILITY_URL = plugin_dir_url(__FILE__) . "update_product_visibility.php";
+    $SEARCH_DB_URL = plugin_dir_url(__FILE__) . "search_db.php";
+    $SEARCH_SOURCE_URL = plugin_dir_url(__FILE__) . "search_source.php";
 
     $MANAGE_STOCK = false;

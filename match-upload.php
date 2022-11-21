@@ -269,12 +269,29 @@ function match_upload_options_html(){
     global $MISSING_FILES_URL;
     global $MISSING_DATA_URL;
     global $APPLY_SEO_URL;
+    global $UPDATE_PRODUCT_VISIBILITY_URL;
+    global $SEARCH_DB_URL;
+    global $SEARCH_SOURCE_URL;
 
     echo "
         <h1>Options</h1>
-        <a href='" . $MISSING_FILES_URL . "'>View missing files</a><br>
+        <a href='" . $MISSING_FILES_URL . "'>View missing files</a>
+        <br>
         <a href='" . $MISSING_DATA_URL ."'>View missing data</a>
-        <a href='" . $APPLY_SEO_URL . "'>Apply SEO</a>
+        <br>
+        <a href='" . $UPDATE_PRODUCT_VISIBILITY_URL . "'>Update product visibility</a>
+        <br>
+        <br>
+        <form action='" . $SEARCH_DB_URL . "' method='POST'>
+            <input type='text' placeholder='Enter search value' name='search_value'>
+            <button type='submit'>Search DB</button>
+        </form>
+        <br>
+        <form action='" . $SEARCH_SOURCE_URL . "' method='POST'>
+            <input type='text' placeholder='Enter search value' name='search_value'>
+            <button type='submit'>Search website source</button>
+        </form>
+
     ";
 }
 
@@ -291,9 +308,30 @@ function mts_apply_metadesc($desc){
         //echo "is product";
         //echo $post->post_content;
         return $post->post_content;
+        //return "second desc";
     }
 }
 
 add_filter("wpseo_metadesc", "mts_apply_metadesc");
+
+//Apply metadata to page
+function mts_apply_metadata(){
+    global $product;
+
+    //Product page metadata
+    if(isset($product)){
+        $description = $product->get_description();
+        //echo "<meta name='description' content='" . $description . "'>";
+    }
+    //echo "<meta "
+}
+
+add_action("wp_head", "mts_apply_metadata");
+
+// function update_product_visibility($category_id){
+
+// }
+
+
 
 
