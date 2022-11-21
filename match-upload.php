@@ -8,6 +8,7 @@
 
 //Requires
 require_once("const.php");
+require_once("update_product_visibility_fn.php");
 
 //Init settings
 function match_upload_settings_init(){
@@ -279,8 +280,6 @@ function match_upload_options_html(){
         <br>
         <a href='" . $MISSING_DATA_URL ."'>View missing data</a>
         <br>
-        <a href='" . $UPDATE_PRODUCT_VISIBILITY_URL . "'>Update product visibility</a>
-        <br>
         <br>
         <form action='" . $SEARCH_DB_URL . "' method='POST'>
             <input type='text' placeholder='Enter search value' name='search_value'>
@@ -331,6 +330,26 @@ add_action("wp_head", "mts_apply_metadata");
 // function update_product_visibility($category_id){
 
 // }
+
+// On category update
+
+function mts_after_category_update($term_id, $tt_id){
+    //global $TEST_URL;
+
+    //echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    //echo $term_id;
+    //echo $tt_id;
+
+    //wp_safe_redirect($TEST_URL . "?term_id=$term_id&tt_id=$tt_id");
+    //wp_safe_redirect("google.com");
+    update_product_visiblity($term_id);
+    error_log("term_id: $term_id, tt_id: $tt_id");
+    //exit();
+}
+
+add_action("edited_product_cat", "mts_after_category_update", 10, 2);
+
+//add_action("woocommerce_api_edit_product_category")
 
 
 
