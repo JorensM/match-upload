@@ -9,6 +9,7 @@
 //Requires
 require_once("const.php");
 require_once("update_product_visibility_fn.php");
+require_once("get_hidden_category_ids.php");
 
 //Init settings
 function match_upload_settings_init(){
@@ -303,7 +304,27 @@ add_action("admin_enqueue_scripts", "match_upload_init_styles");
 //Apply meta descriptions to products
 function mts_apply_metadesc($desc){
     $post = get_post();
-    if($post->post_type === "product"){
+    //$category = get_the_category();
+    // echo "id: " . get_the_ID();
+    // echo "is_category: " . var_dump(is_product_category());
+    // echo "<pre>";
+    // print_r($post);
+    // echo "</pre>";
+    // echo "<pre>";
+    // print_r($category);
+    // echo "</pre>";
+    // $object = get_queried_object();
+    // echo "<pre>";
+    // print_r($object);
+    // echo "</pre>";
+    if(is_product_category()){
+        $category = get_queried_object();
+        if($category->parent > 0){
+            $name = $category->name;
+            return "Buy $name tickets at Matchticketshop.com ✓ Official tickets and packages ✓ Guaranteed seating together ✓ Safe payment";
+        }
+    }
+    else if($post->post_type === "product"){
         //echo "is product";
         //echo $post->post_content;
         return $post->post_content;
@@ -311,21 +332,33 @@ function mts_apply_metadesc($desc){
     }
 }
 
+//Apply meta title to category pages
+function mts_apply_metatitle($title){
+    if(is_product_category()){
+        $category = get_queried_object();
+        if($category->parent > 0){
+            $name = $category->name;
+            return "Buy $name tickets 2022/23 - Matchticketshop.com";
+        }
+    }
+}
+add_filter( 'wpseo_title', 'mts_apply_metatitle' );
+
 add_filter("wpseo_metadesc", "mts_apply_metadesc");
 
 //Apply metadata to page
-function mts_apply_metadata(){
-    global $product;
+function mts_apply_head(){
+    //global $product;
 
     //Product page metadata
     if(isset($product)){
-        $description = $product->get_description();
+        //$description = $product->get_description();
         //echo "<meta name='description' content='" . $description . "'>";
     }
     //echo "<meta "
 }
 
-add_action("wp_head", "mts_apply_metadata");
+add_action("wp_head", "mts_apply_head");
 
 // function update_product_visibility($category_id){
 
@@ -334,22 +367,41 @@ add_action("wp_head", "mts_apply_metadata");
 // On category update
 
 function mts_after_category_update($term_id, $tt_id){
-    //global $TEST_URL;
-
-    //echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-    //echo $term_id;
-    //echo $tt_id;
-
-    //wp_safe_redirect($TEST_URL . "?term_id=$term_id&tt_id=$tt_id");
-    //wp_safe_redirect("google.com");
-    update_product_visiblity($term_id);
-    error_log("term_id: $term_id, tt_id: $tt_id");
-    //exit();
+    //update_product_visiblity($term_id);
+    //error_log("term_id: $term_id, tt_id: $tt_id");
 }
 
 add_action("edited_product_cat", "mts_after_category_update", 10, 2);
 
-//add_action("woocommerce_api_edit_product_category")
+//Alter query to exclude posts that are outdated, or whose category is hidden
+function mts_alter_query($query){
+    if(($query->get("post_type") === "product" && !is_admin() && !$query->is_singular()) || $query->is_search()){
+
+        //$query->set("s", "chelsea");
+        //Hide outdated posts
+        $query->set("meta_key", "match-date");
+        $query->set("meta_value", date("Y-m-d"));
+        $query->set("meta_compare", ">");
+
+        //Hide posts that belong to a hidden category
+
+        $hidden_cat_ids = get_hidden_category_ids();
+
+        $original_tax_query = $query->get( 'tax_query', [] );
+
+        $query->set("tax_query", array(
+            array(
+                "taxonomy" => "product_cat",
+                "field" => "term_id",
+                "terms" => $hidden_cat_ids,
+                "operator" => "NOT IN"
+            ),
+            $original_tax_query
+        ));
+    }
+
+}
+add_action( 'pre_get_posts', 'mts_alter_query' );
 
 
 

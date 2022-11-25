@@ -1,6 +1,10 @@
 <?php
 
-    $term_id = $_GET["term_id"];
-    $tt_id = $_GET["tt_id"];
+    require_once("wp_init.php");
 
-    echo $term_id . "<br>" . $tt_id;
+    $products = wc_get_products(array('limit' => -1));
+
+    
+    foreach($products as $product){
+        echo $product->get_meta("match-date") . "<br>";
+    }

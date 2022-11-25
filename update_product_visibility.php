@@ -1,6 +1,7 @@
 <?php
 
     require_once("wp_init.php");
+    require_once("hide_product_if_outdated.php");
 
     $products = wc_get_products(array("limit" => -1));
 
@@ -48,4 +49,6 @@
             //echo "Setting " . $product->get_title() . " to public<br>";
             $public_products +=1;
         }
+
+        hide_product_if_outdated($product);
     }
