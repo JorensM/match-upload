@@ -50,6 +50,8 @@
 
     //echo "test";
 
+    error_log("--------NEW UPLOAD STARTED-------");
+
     $logs_file = $write_logs ? fopen("logs.txt", "w") : null;
 
     foreach($matches_arr as $index => $match){

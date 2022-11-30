@@ -375,7 +375,7 @@ add_action("edited_product_cat", "mts_after_category_update", 10, 2);
 
 //Alter query to exclude posts that are outdated, or whose category is hidden
 function mts_alter_query($query){
-    if(($query->get("post_type") === "product" && !is_admin() && !$query->is_singular()) || $query->is_search()){
+    if(($query->get("post_type") === "product" && !is_admin() && !$query->is_singular()) || ($query->is_search() && !is_admin())){
 
         //$query->set("s", "chelsea");
         //Hide outdated posts
@@ -402,6 +402,11 @@ function mts_alter_query($query){
 
 }
 add_action( 'pre_get_posts', 'mts_alter_query' );
+
+//Set elementor fonts-display to 'swap'
+add_filter( 'elementor_pro/custom_fonts/font_display', function( $current_value, $font_family, $data ) {
+	return 'swap';
+}, 10, 3 );
 
 
 
