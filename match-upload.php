@@ -323,6 +323,10 @@ function mts_apply_metadesc($desc){
             $name = $category->name;
             return "Buy $name tickets at Matchticketshop.com ✓ Official tickets and packages ✓ Guaranteed seating together ✓ Safe payment";
         }
+        if($category-> parent === 0){
+            $name = $category->name;
+            return "Buy $name at Matchticketshop.com ✓ Official tickets and packages ✓ Guaranteed seating together ✓ Safe payment";
+        }
     }
     else if($post->post_type === "product"){
         //echo "is product";
