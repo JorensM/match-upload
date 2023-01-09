@@ -9,6 +9,7 @@
         private $value;
 
         private IChecker $checker;
+        private IGetter $getter;
 
         // public function check($target){
         //     $fn_name = "check" . ucwords($target);
@@ -63,32 +64,4 @@
 
     
 
-    class DataEntryChecker implements IChecker {
-
-        //private IDataEntry $entry;
-
-        public function __construct(){
-            //$this->entry = $entry;
-        }
-
-        public function check(...$args){
-
-            $target = array_shift($args);
-
-            $fn_name = "check" . ucwords($target);
-
-            if(method_exists($this, $fn_name)){
-                return $this->$fn_name(...$args);
-            }
-            else{
-                throw new Exception("DataEntryChecker: Could not find checker function with name $fn_name");
-            }
-        }
-
-        private function checkRequired($requiredValue, $value){
-            if($requiredValue && $value === null){
-                return false;
-            }
-            return true;
-        }
-    }
+    

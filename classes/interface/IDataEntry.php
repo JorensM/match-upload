@@ -1,15 +1,6 @@
 <?php
 
-    interface IGetter {
-        public function get($target);
-    }
-
-    interface IChecker {
-
-        public function __construct();
-
-        public function check(...$args);
-    }
+    
 
     interface IDataEntry {
         public function __construct($properties, IChecker $checker);
