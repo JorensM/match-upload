@@ -379,13 +379,68 @@ add_action("edited_product_cat", "mts_after_category_update", 10, 2);
 
 //Alter query to exclude posts that are outdated, or whose category is hidden
 function mts_alter_query($query){
-    if(($query->get("post_type") === "product" && !is_admin() && !$query->is_singular()) || ($query->is_search() && !is_admin())){
+    
+    
+    // if(is_array($query->get("post_type")) && in_array("product", $query->get("post_type"))){
+    //     echo "<pre>";
+    //     print_r($query);
+    //     echo "</pre>";
+    // }
+
+    $is_product = $query->get("post_type") === "product" || (is_array($query->get("post_type")) && in_array("product", $query->get("post_type")));
+
+
+    // if($is_product){
+    //     echo "<pre>";
+    //     print_r($query);
+    //     echo "</pre>";
+    // }
+    //echo gettype(is_admin());
+    // echo is_admin() ? 'true' : 'false';
+    // if(is_admin()){
+    //     error_log(print_r($query, true));
+    // }
+
+    $is_ajax_search = $query->get("jet_ajax_search") == "1" ? true : false;
+
+    //error_log("hello");
+    //error_log("|" . $query->get("jet_ajax_search") . "|");
+    //error_log(gettype($query->get("jet_ajax_search")));
+
+    $value = $is_ajax_search ? "true" : "false";
+
+    //error_log("val: " . $value);
+
+    // error_log(print_r($query, true));
+
+    // echo "hello";
+    if(($is_product && !is_admin() && !$query->is_singular()) || ($query->is_search() && !is_admin()) || $is_ajax_search){
+
+        //echo "is search";
+
+        // echo "<pre>";
+        // print_r($query);
+        // echo "</pre>";
 
         //$query->set("s", "chelsea");
         //Hide outdated posts
-        $query->set("meta_key", "match-date");
-        $query->set("meta_value", date("Y-m-d"));
-        $query->set("meta_compare", ">");
+        //$query->set("meta_key", "match-date");
+        //$query->set("meta_value", date("Y-m-d"));
+        //$query->set("meta_compare", ">");
+
+        $original_meta_query = $query->get("meta_query");
+
+        $new_meta_query = array(
+            "relation" => "AND",
+            array(
+                "key" => "match-date",
+                "value" => date("Y-m-d"),
+                "compare" => ">"
+            )//,
+            //$original_meta_query
+        );
+
+        $query->set("meta_query", $new_meta_query);
 
         //Hide posts that belong to a hidden category
 
@@ -393,7 +448,7 @@ function mts_alter_query($query){
 
         $original_tax_query = $query->get( 'tax_query', [] );
 
-        $query->set("tax_query", array(
+        $new_tax_query = array(
             array(
                 "taxonomy" => "product_cat",
                 "field" => "term_id",
@@ -401,11 +456,28 @@ function mts_alter_query($query){
                 "operator" => "NOT IN"
             ),
             $original_tax_query
-        ));
-    }
+        );
 
+        $query->set("tax_query", $new_tax_query);
+
+        $query->set("jet_ajax_search", 0);
+
+        //Second method
+
+        //$query["query"]["tax_query"] = $new_tax_query;
+        //$query["query"]["meta_query"] = $new_meta_query;
+        //$query->query["tax_query"] = $new_tax_query;
+        //$query->query["meta_query"] = $new_meta_query;
+
+        // echo "<pre>";
+        // print_r($query);
+        // echo "</pre>";
+
+    }
 }
-add_action( 'pre_get_posts', 'mts_alter_query' );
+add_action( 'pre_get_posts', 'mts_alter_query', 999);
+
+add_action( 'elementor/query/{$query_id}', 'mts_alter_query' );
 
 //Set elementor fonts-display to 'swap'
 add_filter( 'elementor_pro/custom_fonts/font_display', function( $current_value, $font_family, $data ) {

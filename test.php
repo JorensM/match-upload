@@ -1,10 +1,18 @@
 <?php
 
-    require_once("wp_init.php");
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 
-    $products = wc_get_products(array('limit' => -1));
+    require_once("./classes/DataEntry.php");
 
-    
-    foreach($products as $product){
-        echo $product->get_meta("match-date") . "<br>";
-    }
+    $entry = new DataEntry(
+        [
+            "required" => true,
+            "value" => "hello",
+            "type" => "string"
+        ],
+        new DataEntryChecker()
+    );
+
+    print_r($entry->setValue("hello"));

@@ -147,7 +147,7 @@
         $match_date = date("Y-m-d", $match_date_obj);
         $match_description = generate_product_description($match);
         $match_tournament = $match["tournament"];
-        $match_date_confirm = ($match["match_date"] === null || $match["match_date"] === "") ? "false" : "true";
+        $match_date_confirm = $match["match_fixed"];//($match["match_date"] === null || $match["match_date"] === "") ? "false" : "true";
         $team_img_urls = generate_team_img_filenames($match);
         $team_1_img_url = $team_img_urls[0];
         $team_2_img_url = $team_img_urls[1];
