@@ -16,7 +16,7 @@
 
         $prefix .= ": ";
 
-        $final_message = $prefix . $message;
+        $final_message = $prefix . $message . "";
 
         return $final_message;
     }

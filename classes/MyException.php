@@ -1,6 +1,6 @@
 <?php
 
-    require_once("../functions/formatExceptionMessage.php");
+    require_once(__DIR__."/../functions/formatExceptionMessage.php");
 
    
     class MyException extends Exception {

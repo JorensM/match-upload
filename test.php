@@ -8,24 +8,41 @@
     require_once("./classes/DataEntry.php");
     require_once("./classes/DataEntryChecker.php");
     require_once("./classes/DataEntryParams.php");
+    require_once("./classes/SessionDataManager.php");
+    require_once("./classes/SessionData.php");
+    require_once("./classes/SessionDataEntry.php");
 
     //Functions
     require_once("./functions/echoNl.php");
 
     //$params = new DataEntryParams();
 
-    $entry = new DataEntry(
+    $entry = new SessionDataEntry(
         new DataEntryParams([
-            "required" => true,
-            "value" => "hello",
-            "type" => "string"
+            "required" => false,
+            "value" => "",
+            "type" => ""
         ]),
         new DataEntryChecker(),
     );
 
-    $val = $entry->getValue();
+    $session = new SessionDataManager(
+        new SessionData($entry)
+    );
 
-    echoNl($val);
+    $first_set = "first_set";
+
+    $session->setValues(
+        $first_set,
+        [
+            "first_key" => "hello",
+            "second_key" => "hello!"
+        ],
+    );
+
+    $vals = $session->getValues($first_set);
+
+    print_r($vals);
     
 
     //print_r($entry->setValue("hello"));
