@@ -8,7 +8,7 @@
      */
     function strCaughtException(Exception $e){
         $e_message = $e->getMessage(); //Exception message
-        $e_stack_trace = $e->getTraceAsString(); //Stack trace
+        $e_stack_trace = nl2br($e->getTraceAsString()); //Stack trace
 
         //final string to be returned
         $final_str = 

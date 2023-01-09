@@ -1,15 +1,14 @@
 <?php
 
-    require_once("IDataEntry.php");
+    require_once("abstract/AbstractDataEntry.php");
 
-    class DataEntry implements IDataEntry {
+    class DataEntry extends AbstractDataEntry {
 
         private bool $required;
         private string $type;
         private $value;
 
         private IChecker $checker;
-        private IGetter $getter;
 
         // public function check($target){
         //     $fn_name = "check" . ucwords($target);
@@ -26,40 +25,29 @@
             echo "Checking required";
         }
 
-        public function __construct(
-            $properties,
-            IChecker $checker
-        ){
-            $this->required = $properties["required"];
-            $this->type = $properties["type"];
-            $this->value = $properties["value"];
-
-            $this->checker = $checker;
-        }
-
-        public function getValue(){
+        // public function getValue(){
             
-        }
+        // }
 
-        public function setValue($val){
-            return $this->checker->check("required", $this->required, $this->value);
-        }
+        // public function setValue($val){
+        //     return $this->checker->check("required", $this->required, $this->value);
+        // }
 
-        public function setType(string $type){
+        // public function setType(string $type){
 
-        }
+        // }
 
-        public function getType(){
+        // public function getType(){
 
-        }
+        // }
 
-        public function setRequired(bool $val){
+        // public function setRequired(bool $val){
 
-        }
+        // }
 
-        public function getRequired(){
+        // public function getRequired(){
             
-        }
+        // }
     }
 
     

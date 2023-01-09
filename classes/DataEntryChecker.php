@@ -1,8 +1,10 @@
 <?php    
-    
-    require_once("./abstract/AbstractChecker.php");
-    require_once("../functions/callMethodWithPostfix.php");
-    require_once("../functions/strCaughtException.php");
+
+    require_once("dir.php");
+
+    require_once($dir."classes/abstract/AbstractChecker.php");
+    require_once($dir."functions/callMethodWithPostfix.php");
+    require_once($dir."functions/strCaughtException.php");
 
     class DataEntryChecker extends AbstractChecker {
 

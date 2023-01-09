@@ -1,8 +1,10 @@
 <?php
 
-    require_once("./interface/IChecker.php");
-    require_once("../functions/callMethodWithPostfix.php");
-    require_once("../functions/strCaughtException.php");
+    $dir = __DIR__."/../../";
+
+    require_once($dir."classes/interface/IChecker.php");
+    require_once($dir."functions/callMethodWithPostfix.php");
+    require_once($dir."functions/strCaughtException.php");
 
     abstract class AbstractChecker implements IChecker {
 
