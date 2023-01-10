@@ -1,5 +1,7 @@
 <?php
 
+    require_once("warn.php");
+
     /**
      * Echoes string in a new line.
      * 

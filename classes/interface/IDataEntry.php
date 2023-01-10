@@ -14,13 +14,4 @@
 
         public function setType(string $type);
         public function getType();
-
-        //public function check($target);
-
-        // public function getValue();
-        // public function setValue($value);
-        // public function getRequired();
-        // public function setRequired(bool $value);
-        // public function getType();
-        // public function setType(string $type);
     }

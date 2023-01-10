@@ -10,5 +10,5 @@
     function warn(string $message, $object = null, string $function_name = null){
         $message = formatExceptionMessage($message, $object, $function_name);
 
-        trigger_error($message, E_WARNING);
+        trigger_error($message, E_USER_WARNING);
     }

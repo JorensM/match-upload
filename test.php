@@ -14,35 +14,34 @@
 
     //Functions
     require_once("./functions/echoNl.php");
+    require_once("./functions/printRPre.php");
 
-    //$params = new DataEntryParams();
+    session_start();
 
-    $entry = new SessionDataEntry(
-        new DataEntryParams([
-            "required" => false,
-            "value" => "",
-            "type" => ""
-        ]),
-        new DataEntryChecker(),
-    );
+    $session = new SessionDataManager($_SESSION);
 
-    $session = new SessionDataManager(
-        new SessionData($entry)
-    );
+    session_write_close();
 
-    $first_set = "first_set";
+    //printRPre($_SESSION);
 
-    $session->setValues(
-        $first_set,
+
+    session_start();
+    printRPre($_SESSION);
+    session_write_close();
+
+    $session->set("hello", "yo123hhbbbbh");
+
+    $session->setEntries("test",
         [
-            "first_key" => "hello",
-            "second_key" => "hello!"
-        ],
+            "first" => "ayy123",
+            "second" => "hey123"
+        ]
     );
 
-    $vals = $session->getValues($first_set);
+    session_start();
+    printRPre($_SESSION);
+    session_write_close();
 
-    print_r($vals);
-    
+    $output = $session->getEntries("test", ["first", "second"]);
 
-    //print_r($entry->setValue("hello"));
+    printRPre($output);

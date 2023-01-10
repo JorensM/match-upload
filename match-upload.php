@@ -129,6 +129,7 @@ function match_upload_page_html(){
                     //progress_end_element.innerHTML = 'sucessfully added products, you may now leave this page';
                 })
                 .catch(err => {
+                    console.log('ABCD');
                     console.log(err);
                     //clearInterval(interval);
 

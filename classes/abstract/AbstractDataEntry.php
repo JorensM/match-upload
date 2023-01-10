@@ -37,6 +37,7 @@
         }
         public function getValue(){
             return $this->params->value;
+            //return $this->params->value;
         }
 
         public function setRequired(bool $required){
