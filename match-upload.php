@@ -64,9 +64,9 @@ function match_upload_page_html(){
             progressDiv = document.getElementById('match-upload-progress');
             progressDiv.style.display = 'none';
             
-
+            let interval;
             window.onload = () => {
-                let interval = setInterval(get_progress, 1000);
+                interval = setInterval(get_progress, 1000);
 
                 clear_progress();
             }
@@ -124,12 +124,15 @@ function match_upload_page_html(){
                 .then(response => {return response.json()})
                 .then(data => {
                     console.log(data);
+                    if(data.error !== ''){
+                        progress_end_element.innerHTML = 'an error occured: <br>' + data.error;
+                    }
                     //clearInterval(interval);
                     //clear_progress();
                     //progress_end_element.innerHTML = 'sucessfully added products, you may now leave this page';
                 })
                 .catch(err => {
-                    console.log('ABCD');
+                    //console.log('ABCD');
                     console.log(err);
                     //clearInterval(interval);
 
@@ -150,7 +153,11 @@ function match_upload_page_html(){
                 .then(data => {
                     console.log('progress data: ');
                     console.log(data);
-                    render_progress(data.index, data.title, data.new, data.started, data.finished, data.start_time, data.end_time);
+                    if(data.error){
+                        progress_end_element.innerHTML = 'an error occured: <br>' + data.error_message;
+                    }else{
+                        render_progress(data.index, data.title, data.new, data.started, data.finished, data.start_time, data.end_time);
+                    }
                 })
                 .catch(err => {
                     console.log('err');

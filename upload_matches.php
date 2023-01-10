@@ -1,22 +1,21 @@
 <?php
 
+    // ini_set('display_errors', 1);
+    // ini_set('display_startup_errors', 1);
+    // error_reporting(E_ALL);
+
     require("classes/SessionDataManager.php");
 
-    echo "hello";
+    //echo "hello";
 
-    enum SessionElement {
-        const ProgressData = "progress_data";
+    class SessionElement {
+        public const ProgressData = "progress_data";
+        //public const Test = "hello";
     }
 
-    function error(Exception $e, int $status_code = 400){
-        http_response_code($status_code);
-        echo json_encode(["error" => $e->getMessage()]);
+    
 
-        //die();
-        //throw $e;
-    }
-
-    error(new Exception("hello"), 400);
+    //error(new Exception("hello"), 400);
 
     // class ProgressData {
     //     public int $index;
@@ -103,27 +102,32 @@
             $file_exists = array_key_exists($name, $_FILES);
             if(!$file_exists){
                 $e_message = "Could not find file";
-                throw new MyException($e_message, $this, __METHOD__);
+                error(new MyException($e_message, $this, __METHOD__));
+                //throw new MyException($e_message, $this, __METHOD__);
             }
             if($file_exists){
                 if ($_FILES[$name]['error'] === UPLOAD_ERR_OK) {
                     if($params){
                         if(array_key_exists("ext", $params)){
                             $filename = $_FILES[$name]["name"];
-                            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
                             $ext_valid = in_array($ext, $params["ext"]);
 
                             if(!$ext_valid){
                                 $e_message = "Invalid filetype: $ext given, expected " . implode("/",$params["ext"]);
-                                throw new MyException($e_message, $this, __METHOD__);
+                                error(new MyException($e_message, $this, __METHOD__));
+                                //throw new MyException($e_message, $this, __METHOD__);
                             }
                         }
                     }
                     return true;
                 } else {
                     $e_message = "Upload failed with error code " . $_FILES[$name]['error'];
-                    throw new MyException($e_message, $this, __METHOD__);
+
+                    error(new MyException($e_message, $this, __METHOD__));
+
+                    //throw new MyException($e_message, $this, __METHOD__);
                 }
             }
         }
@@ -157,22 +161,38 @@
         ]
     );
 
+    function error(Exception $e, int $status_code = 400){
+        global $session;
+
+        $e_message = $e->getMessage();
+
+        http_response_code($status_code);
+        echo json_encode(["error" => $e_message]);
+        $session->setEntries(
+            SessionElement::ProgressData, 
+            [
+                "error" => true,
+                "error_message" => $e_message
+            ]
+        );
+
+        die();
+        //throw $e;
+    }
+
     $fileManager = new UploadsManager();
 
     try{
         $fileManager->validateFile("matches-file", [
             "ext" => [
-                "csv"
+                "png"
             ]
         ]);
     }catch(Exception $e){
-        throw new MyException("Could not validate file: " . $e->getMessage());
+        error(new MyException("Could not validate file: " . $e->getMessage()));
+        //throw new MyException("Could not validate file: " . $e->getMessage());
     }
 
     ini_set('max_execution_time', 0);
 
     $write_logs = isset($_POST["write-logs"]) && !($_POST["write-logs"] === "false" || $_POST["write-logs" === "0"]);
-
-    // if(isset($_POST["write-logs"])){
-    //     $write_logs = ($_POST["write-logs"] === 'false' || $_POST["write-logs"] === '0') ? false : true; 
-    // }
