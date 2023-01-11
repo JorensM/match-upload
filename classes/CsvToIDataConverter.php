@@ -2,10 +2,11 @@
 
     require_once("abstract/AbstractConverter.php");
     require_once("interface/IData.php");
+    require_once("CsvToIDataSettings.php");
 
     class CsvToIDataConverter extends AbstractConverter {
 
-        protected array $required_settings = ["key_to_column_mappings", "data_object_prototype"];
+        //protected array $required_settings = ["key_to_column_mappings", "data_object_prototype"];
 
         protected function convertAction($from){
 
@@ -77,6 +78,10 @@
             }
 
             return $output_arr;
-            }
+        }
+
+        protected function generateSettingsObject(){
+            return new CsvToIDataSettings();
+        }
 
     }

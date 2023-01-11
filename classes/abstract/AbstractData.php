@@ -36,4 +36,11 @@
             $this->data[$key] = $value;
         }
 
+        public function get(string $key){
+            if(isset($this->data[$key])){
+                return $this->data[$key];
+            }
+            throw new MyException("Could not get data entry by key '$key': not found", $this, __METHOD__);
+        }
+
     }

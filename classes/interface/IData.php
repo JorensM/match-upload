@@ -18,6 +18,19 @@
          */
         public function overwrite(IData $to_overwrite_with);
 
+        /**
+         * Sets value of data entry by key
+         * 
+         * @param string $key key of entry
+         * @param any $value value to set entry to
+         */
         public function set(string $key, $value);
+
+        /**
+         * Get entry by key. Throws error if entry not found
+         * 
+         * @param string $key key of entry
+         */
+        public function get(string $key);
 
     }

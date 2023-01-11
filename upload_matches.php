@@ -8,6 +8,7 @@
     require_once("classes/CsvToIDataConverter.php");
     require_once("classes/UploadsManager.php");
     require_once("classes/MatchObject.php");
+    require_once("classes/MatchObjectToProductImporter.php");
 
     //echo "hello";
 
@@ -180,11 +181,16 @@
         ]
     );
 
+
+    $matchToProduct = new MatchObjectToProductImporter([
+        "limit" => 50
+    ]);
+
     
     
     
     //Validate file and create file stream
-    try{
+    try {
         $uploadsManager->validateFile($matches_file_name, [
             "ext" => [
                 "csv"
@@ -198,13 +204,21 @@
     }
 
     //Convert file into array MatchObjects
-    try{
+    try {
         $csvToMatch->convert($matches_file_handle);
     }catch(Exception $e){
         error(new MyException("Error converting file: " . $e->getMessage()));
     }
 
     $matches_arr = $csvToMatch->getResult();
+
+    //Import MatchObjects array into WooCommerce products
+
+    try {
+        $matchToProduct->import($matches_arr);
+    }catch(Exception $e){
+        error(new MyException("Error importing matches: " . $e->getMessage()));
+    }
 
     //printRPre($matches_arr);
 
