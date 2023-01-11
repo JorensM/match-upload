@@ -2,32 +2,38 @@
 
     require_once(__DIR__."/../interface/IData.php");
 
-    abstract class AbstractData implements IData{
-        private array $data;
+    abstract class AbstractData implements IData {
 
-        private IDataEntry $entry_prototype;
+        private array $fields;
 
-        public function entry($key){
+        public array $data;
 
-            $is_entry_set = isset($this->data[$key]);
+        public function __construct(array $data){
 
-            if(!$is_entry_set){
-                //return $this->data["key"];
-                $this->data[$key] = clone $this->entry_prototype;
+            $this->data = $data;
+
+            //Set fields
+            foreach($data as $key => $value){
+                array_push($this->fields, $key);
             }
 
-            return $this->data[$key];
-            
+            //$this->data = $data;
         }
 
-        public function allEntries(){
-            return $this->data;
+        public function overwrite(IData $to_merge_with){
+
         }
 
-        public function __construct(IDataEntry $entry_prototype){
-
-            $this->entry_prototype = $entry_prototype;
-
-            $this->data = [];
+        protected function setFields(array $fields){
+            $this->fields = $fields;
         }
+
+        protected function getfields(){
+            return $this->fields;
+        }
+
+        public function set(string $key, $value){
+            $this->data[$key] = $value;
+        }
+
     }

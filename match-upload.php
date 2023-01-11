@@ -126,6 +126,10 @@ function match_upload_page_html(){
                     console.log(data);
                     if(data.error !== ''){
                         progress_end_element.innerHTML = 'an error occured: <br>' + data.error;
+                        clearInterval(interval);
+                    }
+                    if(data.success){
+                        progress_end_element.innerHTML = 'upload complete!';
                     }
                     //clearInterval(interval);
                     //clear_progress();
@@ -134,9 +138,9 @@ function match_upload_page_html(){
                 .catch(err => {
                     //console.log('ABCD');
                     console.log(err);
-                    //clearInterval(interval);
+                    clearInterval(interval);
 
-                    progress_end_element.innerHTML = 'an error occured';
+                    progress_end_element.innerHTML = 'an error occured: ' + err;
                 });
             }
 
@@ -155,6 +159,7 @@ function match_upload_page_html(){
                     console.log(data);
                     if(data.error){
                         progress_end_element.innerHTML = 'an error occured: <br>' + data.error_message;
+                        clearInterval(interval);
                     }else{
                         render_progress(data.index, data.title, data.new, data.started, data.finished, data.start_time, data.end_time);
                     }

@@ -1,16 +1,55 @@
 <?php
 
-    // ini_set('display_errors', 1);
-    // ini_set('display_startup_errors', 1);
-    // error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 
-    require("classes/SessionDataManager.php");
+    require_once("classes/SessionDataManager.php");
+    require_once("classes/CsvToIDataConverter.php");
+    require_once("classes/UploadsManager.php");
+    require_once("classes/MatchObject.php");
 
     //echo "hello";
 
     class SessionElement {
         public const ProgressData = "progress_data";
         //public const Test = "hello";
+    }
+
+    $session = new SessionDataManager();
+
+    $session->set(
+        SessionElement::ProgressData,
+        [
+            "index" => 0,
+            "title" => "",
+            "new" => false,
+            "started" => true,
+            "finished" => false,
+            "start_time" => time(),
+            "end_time" => 0,
+            "error" => false,
+            "error_message" => ""
+        ]
+    );
+
+    function error(Exception $e, int $status_code = 400){
+        global $session;
+
+        $e_message = $e->getMessage();
+
+        http_response_code($status_code);
+        echo json_encode(["error" => $e_message]);
+        $session->setEntries(
+            SessionElement::ProgressData, 
+            [
+                "error" => true,
+                "error_message" => $e_message
+            ]
+        );
+
+        die();
+        //throw $e;
     }
 
     
@@ -89,110 +128,99 @@
         public function closeFile($handle);
     }
 
-    class UploadsManager {
+    //error(new MyException("hello"));
 
-        /**
-         * Manages files uploaded by POST
-         */
-        
-        /**
-         * 
-         */
-        public function validateFile(string $name, array $params = null){
-            $file_exists = array_key_exists($name, $_FILES);
-            if(!$file_exists){
-                $e_message = "Could not find file";
-                error(new MyException($e_message, $this, __METHOD__));
-                //throw new MyException($e_message, $this, __METHOD__);
-            }
-            if($file_exists){
-                if ($_FILES[$name]['error'] === UPLOAD_ERR_OK) {
-                    if($params){
-                        if(array_key_exists("ext", $params)){
-                            $filename = $_FILES[$name]["name"];
-                            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    
+    //Uploads/files
+    $uploadsManager = new UploadsManager();
 
-                            $ext_valid = in_array($ext, $params["ext"]);
+    $matches_file_name = "matches-file";
+    $matches_file_handle;
 
-                            if(!$ext_valid){
-                                $e_message = "Invalid filetype: $ext given, expected " . implode("/",$params["ext"]);
-                                error(new MyException($e_message, $this, __METHOD__));
-                                //throw new MyException($e_message, $this, __METHOD__);
-                            }
-                        }
-                    }
-                    return true;
-                } else {
-                    $e_message = "Upload failed with error code " . $_FILES[$name]['error'];
+    //Converters
 
-                    error(new MyException($e_message, $this, __METHOD__));
+    //Match data keys to csv columns mappings
+    $csvToMatchMappings = [
+        "home_club" => 0,
+        "away_club" => 1,
+        "stadium" => 2,
+        "tournament" => 3,
+        "match_date" => 4,
+        "match_time" => 5,
+        "match_fixed" => 6,
+        "ticket_only_discount" => 7,
+        "cat_1_qty" => 8,
+        "cat_1_price" => 9,
+        "cat_2_qty" => 10,
+        "cat_2_price" => 11,
+        "cat_3_qty" => 12,
+        "cat_3_price" => 13,
+        "cat_4_qty" => 14,
+        "cat_4_price" => 15,
+        "hotel_price" => 16,
+        "package" => 17,
+        "description" => 18,
+        "available_before_days" => 19,
+        "id" => 20
+    ];
 
-                    //throw new MyException($e_message, $this, __METHOD__);
-                }
-            }
-        }
-
-        public function openFile(string $name, string $mode = "r"){
-            $file_handle = fopen($_FILES[$name]["tmp_name"], $mode);
-
-            return $file_handle;
-        }
-
-        public function closeFile($handle){
-            return fclose($handle);
-        }
-        
+    //Convert $csvToMatchMappings to an assoc. array with empty values.
+    //This is for the $match_object_prototype which is required for the $csvToMatch converter.
+    $match_object_prototype_data = [];
+    foreach($match_object_prototype_data as $key => $value){
+        $match_object_prototype_data[$key] = null;
     }
 
-    $session = new SessionDataManager();
+    $match_object_prototype = new MatchObject($match_object_prototype_data);
 
-    $session->set(
-        SessionElement::ProgressData,
+    $csvToMatch = new CsvToIDataConverter(
         [
-            "index" => 0,
-            "title" => "",
-            "new" => false,
-            "started" => true,
-            "finished" => false,
-            "start_time" => time(),
-            "end_time" => 0,
-            "error" => false,
-            "error_message" => ""
+            "key_to_column_mappings" => $csvToMatchMappings,
+            "data_object_prototype" => $match_object_prototype
         ]
     );
 
-    function error(Exception $e, int $status_code = 400){
-        global $session;
-
-        $e_message = $e->getMessage();
-
-        http_response_code($status_code);
-        echo json_encode(["error" => $e_message]);
-        $session->setEntries(
-            SessionElement::ProgressData, 
-            [
-                "error" => true,
-                "error_message" => $e_message
-            ]
-        );
-
-        die();
-        //throw $e;
-    }
-
-    $fileManager = new UploadsManager();
-
+    
+    
+    
+    //Validate file and create file stream
     try{
-        $fileManager->validateFile("matches-file", [
+        $uploadsManager->validateFile($matches_file_name, [
             "ext" => [
-                "png"
+                "csv"
             ]
         ]);
+
+        $matches_file_handle = $uploadsManager->openFile($matches_file_name);
     }catch(Exception $e){
         error(new MyException("Could not validate file: " . $e->getMessage()));
         //throw new MyException("Could not validate file: " . $e->getMessage());
     }
 
+    //Convert file into array MatchObjects
+    try{
+        $csvToMatch->convert($matches_file_handle);
+    }catch(Exception $e){
+        error(new MyException("Error converting file: " . $e->getMessage()));
+    }
+
+    $matches_arr = $csvToMatch->getResult();
+
+    //printRPre($matches_arr);
+
+    //error(new MyException("hello2"));
+
     ini_set('max_execution_time', 0);
 
-    $write_logs = isset($_POST["write-logs"]) && !($_POST["write-logs"] === "false" || $_POST["write-logs" === "0"]);
+    $write_logs = isset($_POST["write-logs"]) && !($_POST["write-logs"] === "false" || $_POST["write-logs"] === "0");
+
+    $show_info = false;
+
+    $info = $show_info ? print_r($matches_arr, true) : "";
+
+    echo "<pre>";
+    print_r($matches_arr);
+    echo "</pre>";
+
+    echo json_encode(["success" => true, "info" => $info]);
+    
