@@ -15,11 +15,16 @@
         //GET parameters converted to to string
         $params_str = "?";
         foreach($params as $key => $value){
-            $params_str .= $key . "=" . $value;
+            $params_str .= $key . "=" . $value . "&";
         }
+        //Remove last "&" character from param string
+        $params_str = substr($params_str, 0, -1);
+
 
         //Final url (url + params)
         $final_url = $url . $params_str;
+
+        echo "making get request: " . $final_url;
 
         $ch = curl_init();
 

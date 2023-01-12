@@ -8,5 +8,4 @@
         if(function_exists("plugins_url")){
             include(plugins_url() . '/woocommerce/includes/class-wc-product-variable.php');// adjust the link
         }
-        
     }
