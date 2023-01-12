@@ -59,6 +59,7 @@
             $description = array_key_exists("description", $params) ? $params["description"] : $product->get_description();
             $categories = array_key_exists("categories", $params) ? $params["categories"] : $product->get_category_ids();
             $image_id = array_key_exists("image_id", $params) ? $params["image_id"] : $product->get_image_id();
+            
 
             //$variations = $product->get_available_variations();
 
@@ -68,6 +69,29 @@
             $product->set_description($description);
             $product->set_category_ids($categories);
             $product->set_image_id($image_id);
+        }
+
+        public function updateProductVariation($product_id, $variation_name, array $params){
+            $product = new WC_Product_Variable($product_id);
+
+            $variation = $this->getVariationByName($product, $variation_name);
+
+            $price = array_key_exists("regular_price", $params) ? $params["regular_price"] : $variation->get_regular_price();
+
+            $variation->set_regular_price($params["price"]);
+
+            $variation->save();
+
+        }
+
+        private function getVariationByName(WC_Product_Variable $product, $variation_name){
+            $variations = $product->get_available_variations("objects");
+            foreach($variations as $variation){
+                if($variation->get_name() === $variation_name){
+                    return $variation;
+                }
+            }
+            return null;
         }
 
     }

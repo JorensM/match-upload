@@ -93,18 +93,23 @@
 
         private function updateProductFromMatchObject($id, MatchObject $match_object){
 
-            $differences = $this->compareProductToMatchObject($id, $match_object);
+            //$differences = $this->compareProductToMatchObject($id, $match_object);
 
             //echo "Updating Product $id differences: " . implode(", ", $differences) . PHP_EOL;
-            $params = [];
-            $match_object->generateMetaInfo();
-            foreach($differences as $difference){
-                $params[$difference] = $match_object->get($difference);
-            }
+            $params = [
+                "title" => $match_object->generateMatchTitle(),
+                "sku" => $match_object->get("id"),
+                "description" => $match_object->generateDescription(),
+                "categories" => $match_object->generateCategoryIds()
+            ];
+            //$match_object->generateMetaInfo();
+            //foreach($differences as $difference){
+                //$params[$difference] = $match_object->get($difference);
+            //}
             
-            if(!empty($params)){
+            //if(!empty($params)){
                 $this->product_manager->updateProduct($id, $params);
-            }
+            //}
 
             
         }
