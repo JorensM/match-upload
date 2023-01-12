@@ -1,6 +1,8 @@
 <?php
 
-    interface IConverter {
+    require_once("IHasSettings.php");
+
+    interface IConverter extends IHasSettings {
         /**
          * Interface for converters such as png to jpeg, csv to class etc
          */

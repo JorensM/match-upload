@@ -2,7 +2,7 @@
 
     require_once("IHasSettings.php");
 
-    interface IIimporter {
+    interface IIimporter extends IHasSettings{
         
         /**
          * Importer interface used for importing data into databases such as WooCommerce products

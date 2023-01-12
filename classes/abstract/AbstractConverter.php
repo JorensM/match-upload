@@ -2,35 +2,36 @@
 
     require_once(__DIR__."/../interface/IConverter.php");
     require_once(__DIR__."/../interface/ISettings.php");
+    require_once("AbstractHasSettings.php");
 
-    abstract class AbstractConverter implements IConverter {
+    abstract class AbstractConverter extends AbstractHasSettings implements IConverter {
 
         private $output;
 
         //private array $settings;
 
-        private ISettings $settings;
+        //protected ISettings $settings;
 
         //protected const required_settings = [];
         //protected array $required_settings = [];
 
         public function __construct(array $settings = self::default_settings){
 
-            $this->settings = $this->generateSettingsObject();
-
+            //$this->settings = $this->generateSettingsObject();
+            $this->initSettings();
             $this->setSettings($settings);
         }
 
-        public function setSettings(array $settings){
+        // public function setSettings(array $settings){
 
-            $this->settings->set($settings);
+        //     $this->settings->set($settings);
 
-            $this->settings->validateRequired();
+        //     $this->settings->validateRequired();
 
-            //$this->settings = $settings;
+        //     //$this->settings = $settings;
 
-            //$this->validateRequiredSettings();
-        }
+        //     //$this->validateRequiredSettings();
+        // }
 
         // private function validateRequiredSettings(){
 
@@ -56,9 +57,9 @@
         //     }
         // }
 
-        public function getSettings(){
-            return $this->settings->get();
-        }
+        // public function getSettings(){
+        //     return $this->settings->get();
+        // }
 
         public function convert($from){
             $output = $this->convertAction($from);
@@ -80,6 +81,6 @@
          * 
          * @return ISettings 
          */
-        abstract protected function generateSettingsObject();
+        //abstract protected function generateSettingsObject();
 
     }

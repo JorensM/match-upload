@@ -3,26 +3,46 @@
     require_once(__DIR__."/../interface/IImporter.php");
     require_once(__DIR__."/../interface/IHasSettings.php");
 
-    abstract class AbstractImporter implements IIimporter, IHasSettings{
+    abstract class AbstractImporter extends AbstractHasSettings implements IIimporter{
 
         private ISettings $_settings;
 
         public function __construct(array $settings){
-            $this->_settings = $this->generateSettingsObject();
-
-            $this->_settings->set($settings);
+            //$this->_settings = $this->generateSettingsObject();
+            $this->initSettings();
+            $this->setSettings($settings);
         }
 
         public function import($data){
+            $this->validateAction($data);
             return $this->importAction($data);
         }
 
-        public function &settings(){
-            return $this->_settings;
-        }
+        //public function &settings(){
+            //return $this->_settings;
+        //}
 
-        abstract protected function generateSettingsObject();
+        //abstract protected function generateSettingsObject();
+        
+        /**
+         * Import action that will be called by import().
+         * Throws error on failure
+         * 
+         * @param string $data data to import
+         * 
+         * @return bool true on success. 
+         */
+        abstract protected function importAction(array $data);
 
-        abstract protected function importAction($data);
+        /**
+         * Validation action used to validate whether specified data is correct.
+         * Gets called in import() method before importAction()
+         * Should throw error on validation fail, and return true on success.
+         * 
+         * @param string $data data to be imported
+         * 
+         * @return bool true on success. 
+         */
+        abstract protected function validateAction(array $data);
 
     }

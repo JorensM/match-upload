@@ -183,7 +183,8 @@
 
 
     $matchToProduct = new MatchObjectToProductImporter([
-        "limit" => 50
+        "limit" => 50,
+        "batch_size" => 80
     ]);
 
     
@@ -232,9 +233,9 @@
 
     $info = $show_info ? print_r($matches_arr, true) : "";
 
-    echo "<pre>";
-    print_r($matches_arr);
-    echo "</pre>";
+    // echo "<pre>";
+    // print_r($matches_arr);
+    // echo "</pre>";
 
     echo json_encode(["success" => true, "info" => $info]);
     
