@@ -53,10 +53,16 @@
         public function updateProduct($id, array $params){
             $product = new WC_Product_Variable($id);
 
+            echo "Will update the following params: " . implode(", ", array_keys($params)) . PHP_EOL;
+
             $name = array_key_exists("title", $params) ? $params["title"] : $product->get_title();
             $description = array_key_exists("description", $params) ? $params["description"] : $product->get_description();
             $categories = array_key_exists("categories", $params) ? $params["categories"] : $product->get_category_ids();
             $image_id = array_key_exists("image_id", $params) ? $params["image_id"] : $product->get_image_id();
+
+            //$variations = $product->get_available_variations();
+
+            //printRPre($variations);
 
             $product->set_name($name);
             $product->set_description($description);

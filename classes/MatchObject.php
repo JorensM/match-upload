@@ -20,6 +20,13 @@
             return "Buy tickets for the football match " .  $home_club . " vs. " . $away_club . " and enjoy this exciting game!";
         }
 
+        public function generateMetaInfo(){
+            $this->data["title"] = $this->generateMatchTitle();
+            $this->data["description"] = $this->generateDescription();
+            $this->data["categories"] = $this->generateCategoryIds();
+            $this->data["image_id"] = $this->generateStadiumImageId();
+        }
+
         /**
          * Returns array of ids for categories to which this match should belong
          */

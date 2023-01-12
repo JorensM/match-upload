@@ -97,31 +97,52 @@
 
             //echo "Updating Product $id differences: " . implode(", ", $differences) . PHP_EOL;
             $params = [];
+            $match_object->generateMetaInfo();
             foreach($differences as $difference){
                 $params[$difference] = $match_object->get($difference);
             }
             
+            if(!empty($params)){
+                $this->product_manager->updateProduct($id, $params);
+            }
 
-            $this->product_manager->updateProduct($id, $params);
+            
+        }
+
+        private function updateProductVariations($id, MatchObject $match_object){
+            
         }
 
         private function compareProductToMatchObject($product_id, MatchObject $match_object){
 
             $product = $this->product_manager->getProduct($product_id);
+            $match_object->generateMetaInfo();
 
             $differences = [];
 
-            if($product["title"] !== $match_object->generateMatchTitle()){
-                $differences[] = "title";
+            $exclude = ["id"];
+
+            foreach($product as $key => $value){
+                if($product[$key] !== $match_object->get($key) && !in_array($key, $exclude)){
+                    $differences[] = $key;
+
+                    //echo "Product has $key = $value" . PHP_EOL;
+                    //echo "Object has $key = " . $match_object->get($key) . PHP_EOL;
+
+                }
             }
 
-            if($product["description"] !== $match_object->generateDescription()){
-                $differences[] = "description";
-            }
+            // if($product["title"] !== $match_object->generateMatchTitle()){
+            //     $differences[] = "title";
+            // }
 
-            if($product["image_id"] !== $match_object->generateStadiumImageId()){
-                $differences[] = "image_id";
-            }
+            // if($product["description"] !== $match_object->generateDescription()){
+            //     $differences[] = "description";
+            // }
+
+            // if($product["image_id"] !== $match_object->generateStadiumImageId()){
+            //     $differences[] = "image_id";
+            // }
 
 
             return $differences;

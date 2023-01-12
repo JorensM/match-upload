@@ -183,7 +183,7 @@
 
 
     $matchToProduct = new MatchObjectToProductImporter([
-        "limit" => 5000,
+        "limit" => 10,
         "batch_size" => 80
     ]);
 
