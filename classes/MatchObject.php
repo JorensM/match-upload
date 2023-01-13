@@ -48,4 +48,34 @@
             return getImageIdOfStadium($stadium_name);
         }
 
+        public function generateVariationData(){
+            $variation_data = [];
+            for($i = 1; $i < 5; $i++){
+                $price = $this->get("cat_" . $i . "_price");
+                $qty = $this->get("cat_" . $i . "_qty");
+
+                echo "price: " . $price;
+                echo "qty: " . $qty;
+
+                //Whether the variation should be enabled
+                //If price or qty is 0/unspecified, variation will be disabled
+                $variation_enable = !($price === "0" || $price === null || $price === "" || $price === 0) && !($qty === "0" || $qty === null || $qty === "" || $qty === 0);
+
+                echo PHP_EOL . "enable: " . var_dump($variation_enable);
+
+                $variation = [
+                    "enable" => $variation_enable,
+                    "number" => $i,
+                    "name" => $this->generateMatchTitle() . " - Category " . $i,
+                    "regular_price" => $price,
+                    "qty" => $qty,
+                    
+                ];
+                array_push($variation_data, $variation); 
+                //}
+
+            }
+            return $variation_data;
+        }
+
     }

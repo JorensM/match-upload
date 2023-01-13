@@ -44,4 +44,8 @@
          * @param array $params params to update
          */
         public function updateProduct($id, array $params);
+
+        public function updateProductVariation($product_id, $variation_name, array $params);
+        
+        public function removeProductVariation($product_id, $variation_name);
     }

@@ -6,16 +6,21 @@
     require_once("WooProductManagerLegacy.php");
     require_once(__DIR__."/../functions/wooGetProducts.php");
     require_once(__DIR__."/../functions/printRPre.php");
+    require_once("enum/EnumSessionDataElement.php");
 
     class MatchObjectToProductImporter extends AbstractImporter {
 
         private IWooProductManager $product_manager;
+
+        private ILogger $logger;
 
         public function __construct(array $settings){
 
             $this->product_manager = new WooProductManagerLegacy();
 
             parent::__construct($settings);
+
+            $this->logger = $settings["logger"];
         }
 
         /**
@@ -28,6 +33,7 @@
             //Settings
             $settings = $this->getSettings();
             
+            $session = $settings["session"];
             //Amount to import per batch
             $batch_size = $settings["batch_size"];
             //Limit import to first $limit results
@@ -50,10 +56,11 @@
                 foreach($data_portion as $entry_key => $entry){
                     $entry_sku = $entry->get("id");
                     $product = $this->product_manager->getProductBySku($entry_sku);
+                    $session_message = "";
                     if($product){
                         //$product = $this->product_manager->getProduct($)
                         //Differences between data from MatchObject and data from product
-
+                        
                         $this->updateProductFromMatchObject($product["id"], $entry);
 
                         // $differences = $this->compareProductToMatchObject($product, $entry);
@@ -62,10 +69,30 @@
                         //     echo $product->get_description() . PHP_EOL;
                         //     echo $entry->generateDescription() . PHP_EOL;
                         // }
+                        $session_message = "Updated product " . $entry->generateMatchTitle() . PHP_EOL;
                     }else{
                         $this->createProductFromMatchObject($entry);
-                        echo "Doesn't exist" . PHP_EOL;
+                        //echo "Doesn't exist" . PHP_EOL;
+                        $session_message = "Created product " . $entry->generateMatchTitle() . PHP_EOL;
                     }
+
+                    $start_time = $session->get(EnumSessionDataElement::ProgressData)["start_time"];
+
+                    $session->set(
+                        EnumSessionDataElement::ProgressData,
+                        [
+                            "index" => $count_imported + $entry_key,
+                            "title" => $session_message,
+                            "message" => $session_message,
+                            "new" => false,
+                            "started" => true,
+                            "finished" => false,
+                            "start_time" => $start_time,
+                            "end_time" => time(),
+                            "error" => false,
+                            "error_message" => ""
+                        ]
+                    );
                     //$product_id = wc_get_product_id_by_sku($entry_sku);
                     //echo "$product_id" . PHP_EOL;
                     //$product = $this->product_manager->getProduct(["sku" => $entry_sku]);
@@ -108,14 +135,49 @@
             //}
             
             //if(!empty($params)){
-                $this->product_manager->updateProduct($id, $params);
-            //}
+            $this->product_manager->updateProduct($id, $params);
+            $this->updateProductVariations($id, $match_object);
 
             
         }
 
-        private function updateProductVariations($id, MatchObject $match_object){
+        private function updateProductVariations($product_id, MatchObject $match_object){
+            $variation_data = $match_object->generateVariationData();
             
+            printRPre($variation_data);
+
+            //Variations that will be removed.
+            $variations_to_remove = [];
+
+            //The loop will set $variation_to_remove entry to false if it loops over that variation
+            foreach($variation_data as $variation){
+                //echo "a";
+
+                if($variation["enable"]){
+                    $this->product_manager->updateProductVariation(
+                        $product_id,
+                        $variation["name"], 
+                        [
+                            "regular_price" => $variation_data["regular_price"],
+                            "manage_stock" => false
+                        ]
+                    );
+                }else{
+                    $variations_to_remove[] = $variation;
+                }
+                //Set current variation's "remove" value to false
+                //$variations_to_remove[$variation["number"]] = false;
+            }
+            echo "a";
+            foreach($variations_to_remove as $variation){
+                try{
+                    $this->product_manager->removeProductVariation($product_id, $variation["name"]);
+                }catch(Exception $e){
+                    $this->logger->log($e->getMessage());
+                }
+                
+            }
+            echo "b";
         }
 
         private function compareProductToMatchObject($product_id, MatchObject $match_object){

@@ -9,21 +9,28 @@
     require_once("classes/UploadsManager.php");
     require_once("classes/MatchObject.php");
     require_once("classes/MatchObjectToProductImporter.php");
+    require_once("classes/MTSLogger.php");
+
+    require_once("classes/enum/EnumSessionDataElement.php");
 
     //echo "hello";
 
-    class SessionElement {
-        public const ProgressData = "progress_data";
-        //public const Test = "hello";
-    }
+    
+
+    $write_logs = isset($_POST["write-logs"]) && !($_POST["write-logs"] === "false" || $_POST["write-logs"] === "0");
+
+    $logs_file_handle = $write_logs ? fopen("logs.txt", "w") : null;
+    
+    $logger = new MTSLogger($logs_file_handle);
 
     $session = new SessionDataManager();
 
     $session->set(
-        SessionElement::ProgressData,
+        EnumSessionDataElement::ProgressData,
         [
             "index" => 0,
             "title" => "",
+            "message" => "",
             "new" => false,
             "started" => true,
             "finished" => false,
@@ -42,7 +49,7 @@
         http_response_code($status_code);
         echo json_encode(["error" => $e_message]);
         $session->setEntries(
-            SessionElement::ProgressData, 
+            EnumSessionDataElement::ProgressData, 
             [
                 "error" => true,
                 "error_message" => $e_message
@@ -184,7 +191,8 @@
 
     $matchToProduct = new MatchObjectToProductImporter([
         "limit" => 10,
-        "batch_size" => 80
+        "batch_size" => 80,
+        "session" => $session
     ]);
 
     
@@ -227,8 +235,6 @@
 
     ini_set('max_execution_time', 0);
 
-    $write_logs = isset($_POST["write-logs"]) && !($_POST["write-logs"] === "false" || $_POST["write-logs"] === "0");
-
     $show_info = false;
 
     $info = $show_info ? print_r($matches_arr, true) : "";
@@ -236,6 +242,8 @@
     // echo "<pre>";
     // print_r($matches_arr);
     // echo "</pre>";
+
+    $logger->close();
 
     echo json_encode(["success" => true, "info" => $info]);
     
