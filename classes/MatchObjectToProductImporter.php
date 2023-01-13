@@ -84,7 +84,7 @@
                     if($product){
                         //$product = $this->product_manager->getProduct($)
                         //Differences between data from MatchObject and data from product
-                        echoNl("Updating product");
+
                         $this->updateProductFromMatchObject($product["id"], $entry);
 
                         // $differences = $this->compareProductToMatchObject($product, $entry);
@@ -161,25 +161,19 @@
             //}
             
             //if(!empty($params)){
-            echo "a";
             $this->product_manager->updateProduct($id, $params);
-            echo "b";
             $this->updateProductVariations($id, $match_object);
-            echo "c";
 
             
         }
 
         private function updateProductVariations($product_id, MatchObject $match_object){
             $variation_data = $match_object->generateVariationData();
-            
-            printRPre($variation_data);
 
             //Variations that will be removed.
             $variations_to_remove = [];
 
             //The loop will set $variation_to_remove entry to false if it loops over that variation
-            echo "a";
             foreach($variation_data as $variation){
 
                 //echo "\n variation enable: " . var_dump($variation["enable"]) . "\n";
@@ -189,7 +183,7 @@
                         $product_id,
                         $variation["name"], 
                         [
-                            "regular_price" => $variation_data["regular_price"],
+                            "regular_price" => $variation["regular_price"],
                             "manage_stock" => false
                         ]
                     );
@@ -197,7 +191,6 @@
                     $variations_to_remove[] = $variation;
                 }
             }
-            echo "b";
             foreach($variations_to_remove as $variation){
                 $variation_exists = $this->product_manager->getVariationByName($product_id, $variation["name"]);
                 if($variation_exists){
@@ -205,7 +198,6 @@
                 }
                 
             }
-            echo "c";
         }
 
         private function compareProductToMatchObject($product_id, MatchObject $match_object){

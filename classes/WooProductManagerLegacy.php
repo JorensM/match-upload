@@ -79,9 +79,19 @@
         }
 
         public function updateProductVariation($product_id, $variation_name, array $params){
+
             $product = new WC_Product_Variable($product_id);
 
+
+            if(!$product){
+                throw new MyException("Couldn't update variation for product $product_id - product not found", $this, __METHOD__);
+            }
+
             $variation = $this->getVariationObjByName($product, $variation_name);
+
+            if(!$variation){
+                throw new MyException("Couldn't update variation $variation_name for product $product_id - variation not found", $this, __METHOD__);
+            }
 
             $price = array_key_exists("regular_price", $params) ? $params["regular_price"] : $variation->get_regular_price();
             $manage_stock = array_key_exists("manage_stock", $params) ? $params["manage_stock"] : $variation->get_manage_stock();
@@ -93,18 +103,50 @@
 
         }
 
+        private function getVariationObjByName(WC_Product_Variable $product, $variation_name){
+            $variation_ids = $product->get_children();//$product->get_available_variations("objects");
+
+            $variations = [];
+
+            foreach($variation_ids as $variation_id){
+                $variations[] = new WC_Product_Variation($variation_id);
+            }
+            
+            foreach($variations as $variation){
+                if($variation->get_name() === $variation_name){
+                    return $variation;
+                }
+            }
+            return null;
+        }
+
+        // public function updateOrCreateProductVariation($product_id, $variation_name, array $params){
+        //     $product = new WC_Product_Variable($product_id);
+
+        //     if(!$product){
+        //         throw new MyException("Couldn't update variation for product $product_id - product not found", $this, __METHOD__);
+        //     }
+
+        //     echo "d";
+        //     $variation = $this->getVariationObjByName($product, $variation_name);
+
+        //     if(!$variation){
+        //         //$this->createVa
+        //     }else{
+                
+        //     }
+
+        // }
+
         public function removeProductVariation($product_id, $variation_name){
+            $this->logger->log("Deleting variation");
+
             $product = new WC_Product_Variable($product_id);
 
             $variation = $this->getVariationObjByName($product, $variation_name);
-            echo "c";
             if($variation){
-                echo "todelete \n";
                 $variation->delete();
-                echo "deleted \n";
             }else{
-                echo "should throw error";
-
                 //error_log()
                 throw new MyException("Could not find variation '$variation_name' in Product $product_id", $this, __METHOD__);
             }
@@ -116,16 +158,6 @@
             $variations = $product->get_available_variations();
             foreach($variations as $variation){
                 if($variation["name"] === $variation_name){
-                    return $variation;
-                }
-            }
-            return null;
-        }
-
-        private function getVariationObjByName(WC_Product_Variable $product, $variation_name){
-            $variations = $product->get_available_variations("objects");
-            foreach($variations as $variation){
-                if($variation->get_name() === $variation_name){
                     return $variation;
                 }
             }
