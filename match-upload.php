@@ -330,23 +330,26 @@ function mts_apply_metadesc($desc){
     // echo "<pre>";
     // print_r($object);
     // echo "</pre>";
-    if(is_product_category()){
-        $category = get_queried_object();
-        if($category->parent > 0){
-            $name = $category->name;
-            return "Buy $name tickets at Matchticketshop.com ✓ Official tickets and packages ✓ Guaranteed seating together ✓ Safe payment";
+    if($post){
+        if(is_product_category()){
+            $category = get_queried_object();
+            if($category->parent > 0){
+                $name = $category->name;
+                return "Buy $name tickets at Matchticketshop.com ✓ Official tickets and packages ✓ Guaranteed seating together ✓ Safe payment";
+            }
+            if($category-> parent === 0){
+                $name = $category->name;
+                return "Buy $name at Matchticketshop.com ✓ Official tickets and packages ✓ Guaranteed seating together ✓ Safe payment";
+            }
         }
-        if($category-> parent === 0){
-            $name = $category->name;
-            return "Buy $name at Matchticketshop.com ✓ Official tickets and packages ✓ Guaranteed seating together ✓ Safe payment";
+        else if($post->post_type === "product"){
+            //echo "is product";
+            //echo $post->post_content;
+            return $post->post_content;
+            //return "second desc";
         }
     }
-    else if($post->post_type === "product"){
-        //echo "is product";
-        //echo $post->post_content;
-        return $post->post_content;
-        //return "second desc";
-    }
+    
 }
 
 //Apply meta title to category pages

@@ -81,7 +81,7 @@
         public function updateProductVariation($product_id, $variation_name, array $params){
             $product = new WC_Product_Variable($product_id);
 
-            $variation = $this->getVariationByName($product, $variation_name);
+            $variation = $this->getVariationObjByName($product, $variation_name);
 
             $price = array_key_exists("regular_price", $params) ? $params["regular_price"] : $variation->get_regular_price();
             $manage_stock = array_key_exists("manage_stock", $params) ? $params["manage_stock"] : $variation->get_manage_stock();
@@ -96,7 +96,7 @@
         public function removeProductVariation($product_id, $variation_name){
             $product = new WC_Product_Variable($product_id);
 
-            $variation = $this->getVariationByName($product, $variation_name);
+            $variation = $this->getVariationObjByName($product, $variation_name);
             echo "c";
             if($variation){
                 echo "todelete \n";
@@ -111,7 +111,18 @@
             
         }
 
-        private function getVariationByName(WC_Product_Variable $product, $variation_name){
+        public function getVariationByName($product_id, $variation_name){
+            $product = new WC_Product_Variable($product_id);
+            $variations = $product->get_available_variations();
+            foreach($variations as $variation){
+                if($variation["name"] === $variation_name){
+                    return $variation;
+                }
+            }
+            return null;
+        }
+
+        private function getVariationObjByName(WC_Product_Variable $product, $variation_name){
             $variations = $product->get_available_variations("objects");
             foreach($variations as $variation){
                 if($variation->get_name() === $variation_name){

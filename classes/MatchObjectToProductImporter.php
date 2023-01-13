@@ -23,6 +23,14 @@
             $this->logger = $settings["logger"];
         }
 
+        private function calcBatchSize($count_imported, $limit, $batch_size){
+            if($count_imported + $batch_size > $limit){
+                return ($count_imported + $batch_size) - $limit;
+            }else{
+                return $batch_size;
+            }
+        }
+
         /**
          * Main import action called by the import() method
          * 
@@ -30,6 +38,8 @@
          */
         protected function importAction(array $data){
             
+            
+
             //Settings
             $settings = $this->getSettings();
             
@@ -39,28 +49,42 @@
             //Limit import to first $limit results
             $limit = $settings["limit"];
 
+            //Remove elements that are above limit count
+            $data = array_slice($data, 0, $limit);
+
+            
+
+
             //Loop data
             //Amount of items imported
             $count_imported = 0;
 
-            //Single batch of data to import
-            $data_portion = array_splice($data, 0, $batch_size);
+            //$batch_size = $this->calcBatchSize($count_imported, $limit, $batch_size);
+
+            
+
+            //echo "\n data portion:  \n" . count($data_portion); 
+            //printRPre($data_portion);
 
             //echo "Non existent product by sku: " . ($this->product_manager->productExistsBySku(-5) ? "true" : "false") . PHP_EOL;
 
             //Loop for each batch. Iterates as long as there is still data. Terminates if import count reaches $limit
             while(!empty($data) && $count_imported < $limit){
 
-                //$product_json = wooGetProducts(["per_page" => 8]);
+                //Single batch of data to import
+                $data_portion = array_splice($data, 0, $batch_size);
 
+                //$product_json = wooGetProducts(["per_page" => 8]);
+                echo "size: " . count($data_portion);
                 foreach($data_portion as $entry_key => $entry){
+                    echo "\n loop";
                     $entry_sku = $entry->get("id");
                     $product = $this->product_manager->getProductBySku($entry_sku);
                     $session_message = "";
                     if($product){
                         //$product = $this->product_manager->getProduct($)
                         //Differences between data from MatchObject and data from product
-                        
+                        echoNl("Updating product");
                         $this->updateProductFromMatchObject($product["id"], $entry);
 
                         // $differences = $this->compareProductToMatchObject($product, $entry);
@@ -71,6 +95,7 @@
                         // }
                         $session_message = "Updated product " . $entry->generateMatchTitle() . PHP_EOL;
                     }else{
+                        echoNl("Creating product");
                         $this->createProductFromMatchObject($entry);
                         //echo "Doesn't exist" . PHP_EOL;
                         $session_message = "Created product " . $entry->generateMatchTitle() . PHP_EOL;
@@ -101,8 +126,9 @@
                 //printRPre($product_json);
 
                 $count_imported += $batch_size;
+                //$batch_size = $this->calcBatchSize($count_imported, $limit, $batch_size);
                 //Get the next batch of data
-                $data_portion = array_splice($data, 0, $batch_size);
+                //$data_portion = array_splice($data, 0, $batch_size);
             }
 
         }
@@ -135,8 +161,11 @@
             //}
             
             //if(!empty($params)){
+            echo "a";
             $this->product_manager->updateProduct($id, $params);
+            echo "b";
             $this->updateProductVariations($id, $match_object);
+            echo "c";
 
             
         }
@@ -150,8 +179,10 @@
             $variations_to_remove = [];
 
             //The loop will set $variation_to_remove entry to false if it loops over that variation
+            echo "a";
             foreach($variation_data as $variation){
-                //echo "a";
+
+                //echo "\n variation enable: " . var_dump($variation["enable"]) . "\n";
 
                 if($variation["enable"]){
                     $this->product_manager->updateProductVariation(
@@ -165,19 +196,16 @@
                 }else{
                     $variations_to_remove[] = $variation;
                 }
-                //Set current variation's "remove" value to false
-                //$variations_to_remove[$variation["number"]] = false;
             }
-            echo "a";
+            echo "b";
             foreach($variations_to_remove as $variation){
-                try{
+                $variation_exists = $this->product_manager->getVariationByName($product_id, $variation["name"]);
+                if($variation_exists){
                     $this->product_manager->removeProductVariation($product_id, $variation["name"]);
-                }catch(Exception $e){
-                    $this->logger->log($e->getMessage());
                 }
                 
             }
-            echo "b";
+            echo "c";
         }
 
         private function compareProductToMatchObject($product_id, MatchObject $match_object){

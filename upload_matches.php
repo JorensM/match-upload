@@ -23,6 +23,8 @@
     
     $logger = new MTSLogger($logs_file_handle);
 
+    $logger->log("Test");
+
     $session = new SessionDataManager();
 
     $session->set(
@@ -138,6 +140,7 @@
 
     //error(new MyException("hello"));
 
+    $logger->log("1");
     
     //Uploads/files
     $uploadsManager = new UploadsManager();
@@ -188,16 +191,18 @@
         ]
     );
 
+    $logger->log("2");
 
     $matchToProduct = new MatchObjectToProductImporter([
         "limit" => 10,
         "batch_size" => 80,
-        "session" => $session
+        "session" => $session,
+        "logger" => $logger
     ]);
 
     
     
-    
+    $logger->log("Before");
     //Validate file and create file stream
     try {
         $uploadsManager->validateFile($matches_file_name, [
@@ -212,12 +217,16 @@
         //throw new MyException("Could not validate file: " . $e->getMessage());
     }
 
+    $logger->log("After");
+
     //Convert file into array MatchObjects
     try {
         $csvToMatch->convert($matches_file_handle);
     }catch(Exception $e){
         error(new MyException("Error converting file: " . $e->getMessage()));
     }
+
+    $logger->log("Next");
 
     $matches_arr = $csvToMatch->getResult();
 

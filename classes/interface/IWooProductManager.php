@@ -45,6 +45,8 @@
          */
         public function updateProduct($id, array $params);
 
+        public function getVariationByName($product_id, string $variation_name);
+
         public function updateProductVariation($product_id, $variation_name, array $params);
         
         public function removeProductVariation($product_id, $variation_name);

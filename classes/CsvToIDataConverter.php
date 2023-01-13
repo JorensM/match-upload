@@ -77,6 +77,8 @@
                 
             }
 
+            fclose($file_handle);
+
             return $output_arr;
         }
 
