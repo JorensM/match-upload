@@ -402,10 +402,15 @@ function mts_alter_query($query){
     //     print_r($query);
     //     echo "</pre>";
     // }
+    
+    //Don't alter query if it's a REST API call
+    if( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+        return $query;
+    }
 
     $is_product = $query->get("post_type") === "product" || (is_array($query->get("post_type")) && in_array("product", $query->get("post_type")));
 
-
+    //echo "hello";
     // if($is_product){
     //     echo "<pre>";
     //     print_r($query);

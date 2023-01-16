@@ -45,6 +45,8 @@
          */
         public function updateProduct($id, array $params);
 
+        public function bulkUpdateProducts(array $products);
+
         public function getVariationByName($product_id, string $variation_name);
 
         public function updateProductVariation($product_id, $variation_name, array $params);

@@ -54,6 +54,10 @@
             //printRPre($product);
         }
 
+        public function bulkUpdateProducts(array $products){
+            
+        }
+
         /**
          * Extract what is different in array 1 from array 2
          * 
