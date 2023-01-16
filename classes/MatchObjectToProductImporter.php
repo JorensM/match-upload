@@ -16,7 +16,7 @@
 
         public function __construct(array $settings){
 
-            $this->product_manager = new WooProductManagerLegacy();
+            $this->product_manager = new WooProductManagerLegacy($settings["logger"]);
 
             parent::__construct($settings);
 
@@ -61,13 +61,6 @@
 
             //$batch_size = $this->calcBatchSize($count_imported, $limit, $batch_size);
 
-            
-
-            //echo "\n data portion:  \n" . count($data_portion); 
-            //printRPre($data_portion);
-
-            //echo "Non existent product by sku: " . ($this->product_manager->productExistsBySku(-5) ? "true" : "false") . PHP_EOL;
-
             //Loop for each batch. Iterates as long as there is still data. Terminates if import count reaches $limit
             while(!empty($data) && $count_imported < $limit){
 
@@ -75,9 +68,7 @@
                 $data_portion = array_splice($data, 0, $batch_size);
 
                 //$product_json = wooGetProducts(["per_page" => 8]);
-                echo "size: " . count($data_portion);
                 foreach($data_portion as $entry_key => $entry){
-                    echo "\n loop";
                     $entry_sku = $entry->get("id");
                     $product = $this->product_manager->getProductBySku($entry_sku);
                     $session_message = "";
@@ -86,16 +77,9 @@
                         //Differences between data from MatchObject and data from product
 
                         $this->updateProductFromMatchObject($product["id"], $entry);
-
-                        // $differences = $this->compareProductToMatchObject($product, $entry);
-                        // echo $product->get_id() . " Product Exists. Differences: " . implode(", ", $differences) . PHP_EOL;
-                        // if(in_array("description", $differences)){
-                        //     echo $product->get_description() . PHP_EOL;
-                        //     echo $entry->generateDescription() . PHP_EOL;
-                        // }
+                        
                         $session_message = "Updated product " . $entry->generateMatchTitle() . PHP_EOL;
                     }else{
-                        echoNl("Creating product");
                         $this->createProductFromMatchObject($entry);
                         //echo "Doesn't exist" . PHP_EOL;
                         $session_message = "Created product " . $entry->generateMatchTitle() . PHP_EOL;

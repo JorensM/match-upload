@@ -10,8 +10,11 @@
     require_once("classes/MatchObject.php");
     require_once("classes/MatchObjectToProductImporter.php");
     require_once("classes/MTSLogger.php");
+    require_once("classes/ProductImporter.php");
 
     require_once("classes/enum/EnumSessionDataElement.php");
+
+    require_once("functions/matchObjectToProductArrayMany.php");
 
     //echo "hello";
 
@@ -197,7 +200,15 @@
         "limit" => 10,
         "batch_size" => 80,
         "session" => $session,
-        "logger" => $logger
+        "logger" => $logger,
+    ]);
+
+    $productImporter = new ProductImporter([
+        "limit" => 10,
+        "batch_size" => 80,
+        "session" => $session,
+        "logger" => $logger,
+        "importBy" => "sku"
     ]);
 
     
@@ -232,8 +243,17 @@
 
     //Import MatchObjects array into WooCommerce products
 
+    // try {
+    //     $matchToProduct->import($matches_arr);
+    // }catch(Exception $e){
+    //     error(new MyException("Error importing matches: " . $e->getMessage()));
+    // }
+
+    //MatcheObjects converted into arrays supported by ProductImporter
+    $matches_products_arr = matchObjectToProductArrayMany($matches_arr, 20);
+
     try {
-        $matchToProduct->import($matches_arr);
+        $productImporter->import($matches_products_arr);
     }catch(Exception $e){
         error(new MyException("Error importing matches: " . $e->getMessage()));
     }
