@@ -60,27 +60,27 @@
             $home_club = $this->get("home_club");
             $away_club = $this->get("away_club");
 
-            $team_1 = wp_upload_dir()["url"] . "/" . cleanstr($match["home_club"]) . ".webp";
-            $team_2 = wp_upload_dir()["url"] . "/" . cleanstr($match["away_club"]) . ".webp";
+            $team_1 = wp_upload_dir()["url"] . "/" . cleanstr($home_club) . ".webp";
+            $team_2 = wp_upload_dir()["url"] . "/" . cleanstr($away_club) . ".webp";
 
             if(!file_exists_on_url($team_1)){
-                $team_1 = wp_upload_dir()["url"] . "/" . cleanstr2($match["home_club"]) . ".webp";
+                $team_1 = wp_upload_dir()["url"] . "/" . cleanstr2($home_club) . ".webp";
                 if(!file_exists_on_url($team_1)){
-                    error_log("Warning: the following club is missing .webp format image - ". $match['home_club']);
-                    $team_1 = wp_upload_dir()["url"] . "/" . cleanstr($match["home_club"]) . ".png";
+                    error_log("Warning: the following club is missing .webp format image - ". $home_club);
+                    $team_1 = wp_upload_dir()["url"] . "/" . cleanstr($home_club) . ".png";
                     if(!file_exists_on_url($team_1)){
-                        $team_1 = wp_upload_dir()["url"] . "/" . cleanstr2($match["home_club"]) . ".png";
+                        $team_1 = wp_upload_dir()["url"] . "/" . cleanstr2($home_club) . ".png";
                     }   
                 }
             }
 
             if(!file_exists_on_url($team_2)){
-                $team_2 = wp_upload_dir()["url"] . "/" . cleanstr2($match["away_club"]) . ".webp";
+                $team_2 = wp_upload_dir()["url"] . "/" . cleanstr2($away_club) . ".webp";
                 if(!file_exists_on_url($team_2)){
-                    error_log("Warning: the following club is missing .webp format image - ". $match['away_club']);
-                    $team_2 = wp_upload_dir()["url"] . "/" . cleanstr($match["away_club"]) . ".png";
+                    error_log("Warning: the following club is missing .webp format image - ". $away_club);
+                    $team_2 = wp_upload_dir()["url"] . "/" . cleanstr($away_club) . ".png";
                     if(!file_exists_on_url($team_2)){
-                        $team_2 = wp_upload_dir()["url"] . "/" . cleanstr2($match["away_club"]) . ".png";
+                        $team_2 = wp_upload_dir()["url"] . "/" . cleanstr2($away_club) . ".png";
                     }
                 }
             }
