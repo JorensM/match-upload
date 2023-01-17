@@ -47,52 +47,17 @@ function match_upload_page_html(){
         <button id='cancel-button' type='button' onclick='cancel_upload()' style='display: none'>Cancel</button>
         <span id='match-upload-error' class='match-upload-error'></span>
         <div class='match-upload-progress' id='match-upload-progress'>
+            <span id='progress-message'></span><br>
             <span id='progress-index'></span><br>
             <span id='progress-title'></span><br>
             <span id='progress-status'></span><br>
             <span>Time elapsed: <span id='progress-time'></span> seconds</span><br>
         </div>
-        <pre>
-            <div id='match-upload-logs' class='match-upload-logs'>
-                logs
-            </div>
-        </pre>
-    
+        <div id='match-upload-end' style='flex-direction: column'>
+            <span id='progress-end'></span><br>
+            <span>Time to complete: <span id='progress-end-time'></span> seconds<span><br>
+        </div>
         <script>
-            let logs_string = '';
-            console.log('bca');
-            window.onload = () => {
-                console.log('abc');
-                setInterval(() => {
-                    update_logs();
-                }, 1000);
-            }
-
-            function update_logs(){
-                console.log('updating logs: ');
-                const request = new Request('" . $LOGS_URL . "',
-                    {
-                        method: 'POST',
-                        credentials: 'same-origin'
-                    }
-                );
-
-                fetch(request)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    render_logs(data.logs);
-                })
-                .catch(err => {
-                    console.log('logs error');
-                    console.log(err);
-                });
-            }
-
-            function render_logs(logs){
-                document.getElementById('match-upload-logs').innerHTML = logs;
-            }
-            
             let error_element = document.getElementById('match-upload-error');
 
             let progress_end_element = document.getElementById('progress-end');
@@ -102,12 +67,13 @@ function match_upload_page_html(){
             
             let interval;
             window.onload = () => {
-                //interval = setInterval(get_progress, 1000);
+                interval = setInterval(get_progress, 1000);
 
-                //clear_progress();
+                clear_progress();
             }
 
             function cancel_upload(){
+                console.log('canceling upload');
                 var request = new Request('" . $CANCEL_URL . "',
                     {
                         method: 'POST',
@@ -197,7 +163,7 @@ function match_upload_page_html(){
                         progress_end_element.innerHTML = 'an error occured: <br>' + data.error_message;
                         clearInterval(interval);
                     }else{
-                        render_progress(data.index, data.title, data.new, data.started, data.finished, data.start_time, data.end_time);
+                        render_progress(data.message, data.started, data.finished, data.start_time, data.end_time);
                     }
                 })
                 .catch(err => {
@@ -206,13 +172,14 @@ function match_upload_page_html(){
                 });
             }
 
-            function render_progress(index, title, status, started, finished, start_time, end_time){
+            function render_progress(message, started, finished, start_time, end_time){
                 indexElement = document.getElementById('progress-index');
                 titleElement = document.getElementById('progress-title');
                 statusElement = document.getElementById('progress-status');
                 cancelButton = document.getElementById('cancel-button');
                 progressTimeElement = document.getElementById('progress-time');
                 progressEndDiv = document.getElementById('match-upload-end');
+                messageElement = document.getElementById('progress-message');
                 
 
                 progressEndDiv.style.display = 'none';
@@ -234,12 +201,13 @@ function match_upload_page_html(){
                     progressDiv.style.display = 'flex';
                     cancelButton.style.display = 'block';
                     matchUploadForm.style.display = 'none';
-                    document.getElementById('progress-index').innerHTML = index;
-                    document.getElementById('progress-title').innerHTML = title;
+                    messageElement.innerHTML = message;
+                    //document.getElementById('progress-index').innerHTML = index;
+                    //document.getElementById('progress-title').innerHTML = title;
                     if(status === true){
-                        document.getElementById('progress-status').innerHTML = 'Product doesn\'t exist, adding';
+                        //document.getElementById('progress-status').innerHTML = 'Product doesn\'t exist, adding';
                     }else{
-                        document.getElementById('progress-status').innerHTML = 'Product already exists, updating';
+                        //document.getElementById('progress-status').innerHTML = 'Product already exists, updating';
                     }
 
                     progressTimeElement.innerHTML = end_time - start_time;

@@ -71,6 +71,22 @@
 
             $logger->log("Will import $data_count products");
             $logger->log("");
+
+            $start_time = time();
+
+            $session->set(
+                EnumSessionDataElement::ProgressData,
+                [
+                    "message" => "Starting import",
+                    "new" => false,
+                    "started" => true,
+                    "finished" => false,
+                    "start_time" => $start_time,
+                    "end_time" => time(),
+                    "error" => false,
+                    "error_message" => ""
+                ]
+            );
             
             //Loop for each batch. Iterates as long as there is still data. Terminates if import count reaches $limit
             while(!empty($data) && $count_imported < $limit){
@@ -81,6 +97,19 @@
                 $data_portion = array_splice($data, 0, $batch_size);
 
                 $logger->log("-------- Batch $batch_index/$batch_count");
+                $session->set(
+                    EnumSessionDataElement::ProgressData,
+                    [
+                        "message" => "Batch $batch_index/$batch_count",
+                        "new" => false,
+                        "started" => true,
+                        "finished" => false,
+                        "start_time" => $start_time,
+                        "end_time" => time(),
+                        "error" => false,
+                        "error_message" => ""
+                    ]
+                );
 
 
                 //Determine which entries must be updated and which must be created
@@ -129,6 +158,8 @@
                 $this->logCount("create", "Created ", $total_created, $response, $logger);
                 $this->logCount("update", "Updated ", $total_updated, $response, $logger);
                 $this->logCount("delete", "Deleted ", $total_deleted, $response, $logger);
+
+                
 
                 // if($entries_created_count){
                 //     $logger->log("Created $entries_created_count products");
@@ -196,10 +227,25 @@
             //     //Get the next batch of data
             //     //$data_portion = array_splice($data, 0, $batch_size);
             }
+            $session->set(
+                EnumSessionDataElement::ProgressData,
+                [
+                    "message" => "Import completed!",
+                    "new" => false,
+                    "started" => false,
+                    "finished" => true,
+                    "start_time" => $start_time,
+                    "end_time" => time(),
+                    "error" => false,
+                    "error_message" => ""
+                ]
+            );
             $logger->log("-------- Importing has finished successfully!");
             $logger->log("Total created: $total_created");
             $logger->log("Total updated: $total_updated");
             $logger->log("Total deleted: $total_deleted");
+
+            
         }
 
         // private function updateProduct(){

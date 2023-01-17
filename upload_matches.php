@@ -28,21 +28,21 @@
 
     $session = new SessionDataManager();
 
-    $session->set(
-        EnumSessionDataElement::ProgressData,
-        [
-            "index" => 0,
-            "title" => "",
-            "message" => "",
-            "new" => false,
-            "started" => true,
-            "finished" => false,
-            "start_time" => time(),
-            "end_time" => 0,
-            "error" => false,
-            "error_message" => ""
-        ]
-    );
+    // $session->set(
+    //     EnumSessionDataElement::ProgressData,
+    //     [
+    //         "index" => 0,
+    //         "title" => "",
+    //         "message" => "",
+    //         "new" => false,
+    //         "started" => true,
+    //         "finished" => false,
+    //         "start_time" => time(),
+    //         "end_time" => 0,
+    //         "error" => false,
+    //         "error_message" => ""
+    //     ]
+    // );
 
     function error(Exception $e, int $status_code = 400){
         global $session;
