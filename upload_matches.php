@@ -198,8 +198,8 @@
     ]);
 
     $productImporter = new ProductImporter([
-        "limit" => 2000,
-        "batch_size" => 50,
+        "limit" => 40,
+        "batch_size" => 10,
         "session" => $session,
         "logger" => $logger,
         "importBy" => "sku"

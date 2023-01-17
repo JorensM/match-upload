@@ -52,11 +52,47 @@ function match_upload_page_html(){
             <span id='progress-status'></span><br>
             <span>Time elapsed: <span id='progress-time'></span> seconds</span><br>
         </div>
-        <div id='match-upload-end' style='flex-direction: column'>
-            <span id='progress-end'></span><br>
-            <span>Time to complete: <span id='progress-end-time'></span> seconds<span><br>
-        </div>
+        <pre>
+            <div id='match-upload-logs' class='match-upload-logs'>
+                logs
+            </div>
+        </pre>
+    
         <script>
+            let logs_string = '';
+            console.log('bca');
+            window.onload = () => {
+                console.log('abc');
+                setInterval(() => {
+                    update_logs();
+                }, 1000);
+            }
+
+            function update_logs(){
+                console.log('updating logs: ');
+                const request = new Request('" . $LOGS_URL . "',
+                    {
+                        method: 'POST',
+                        credentials: 'same-origin'
+                    }
+                );
+
+                fetch(request)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    render_logs(data.logs);
+                })
+                .catch(err => {
+                    console.log('logs error');
+                    console.log(err);
+                });
+            }
+
+            function render_logs(logs){
+                document.getElementById('match-upload-logs').innerHTML = logs;
+            }
+            
             let error_element = document.getElementById('match-upload-error');
 
             let progress_end_element = document.getElementById('progress-end');
