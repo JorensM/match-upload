@@ -204,7 +204,7 @@
     ]);
 
     $productImporter = new ProductImporter([
-        "limit" => 10,
+        "limit" => 40,
         "batch_size" => 80,
         "session" => $session,
         "logger" => $logger,
@@ -250,7 +250,9 @@
     // }
 
     //MatcheObjects converted into arrays supported by ProductImporter
-    $matches_products_arr = matchObjectToProductArrayMany($matches_arr, 20);
+    $matches_products_arr = matchObjectToProductArrayMany($matches_arr, 40);
+
+    //printRPre(json_encode($matches_products_arr));
 
     try {
         $productImporter->import($matches_products_arr);

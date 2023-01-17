@@ -8,16 +8,16 @@
      * 
      * @param array $params key/value pairs of GET parameters
      */
-    function wooUpdateProducts(array $products){
+    function wooUpdateVariations($product_id, array $variations_to_create, array $variations_to_update, array $variations_to_delete){
         global $WOO_API_USER;
         global $WOO_API_PASS;
 
         return curlPost(
-            "https://www.matchticketshop.com/wp-json/wc/v3/products/batch",
+            "https://www.matchticketshop.com/wp-json/wc/v3/products/$product_id/variations/batch",
             [
-                "create" => [],
-                "update" => $products,
-                "delete" => []
+                "create" => $variations_to_create,
+                "update" => $variations_to_update,
+                "delete" => $variations_to_delete
             ],
             [
                 "Content-Type: application/json"

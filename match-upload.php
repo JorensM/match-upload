@@ -66,9 +66,9 @@ function match_upload_page_html(){
             
             let interval;
             window.onload = () => {
-                interval = setInterval(get_progress, 1000);
+                //interval = setInterval(get_progress, 1000);
 
-                clear_progress();
+                //clear_progress();
             }
 
             function cancel_upload(){

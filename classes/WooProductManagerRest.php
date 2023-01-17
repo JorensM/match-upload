@@ -8,6 +8,8 @@
     require_once(__DIR__."/../functions/printRPre.php");
     require_once(__DIR__."/../functions/wooGetProducts.php");
     require_once(__DIR__."/../functions/wooUpdateProducts.php");
+    require_once(__DIR__."/../functions/wooUpdateVariations.php");
+    require_once(__DIR__."/../functions/wooGetVariations.php");
     
 
     class WooProductManagerRest implements IWooProductManager{
@@ -44,6 +46,8 @@
             //Products converted to the REST API's format
             $products_rest_format = [];
 
+            
+
             foreach($products as $product){
                 
                 //Convert category ids to REST API's supported category format
@@ -54,18 +58,141 @@
                             "id" => $category_id
                         ];
                     }
+                    unset($product["category_ids"]);
                 }
+                unset($product["meta_data"]);
+                unset($product["image_id"]);
+                unset($product["variations"]);
                 $products_rest_format[] = $product;
             }
 
             //echo "\nrequest:\n";
             //printRPre(json_encode($products_rest_format));
 
-            $response = wooUpdateProducts($products);
+            $response = wooUpdateProducts($products_rest_format);
 
-            echo "\nupdated products: \n";
-            printRPre($response);
+            // echo "\nupdated products: \n";
+            // echo "<pre>";
+            // print_r(json_encode($response));
+            // echo "</pre>";
+
+            // echo "\n products: \n";
+            // printRPre($products);
+
+            //Update variations
+            foreach($products as $product){
+                echo "\nlooping\n";
+                
+                $this->updateVariations($product);
+                //$response = wooUpdateVariations($product["id"],);
+            }
+            //printRPre($response);
         }
+
+        private function updateVariations($product){
+            echo "Updating variations for: " . $product["title"] . "\n";
+            $all_variations = wooGetVariations($product["id"]);//$this->getVariationByDescription()
+
+            echo "a";
+            //Variation converted to REST API format
+            $variations_to_delete = [];
+            $variations_to_update_rest_format = [];
+            $variations_to_create_rest_format = [];
+
+            foreach($all_variations as $index => $variation){
+                $all_variations[$index]["description"] = wp_strip_all_tags($variation["description"]);
+                $variation["description"] = wp_strip_all_tags($variation["description"]);
+                if($variation["description"] === null || $variation["description"] === ""){
+                    $variations_to_delete[] = $variation["id"];
+                }
+            }
+            echo "b";
+
+            $category_attribute_id = 1;
+            $category_attribute_name = "Seat Category";
+
+            foreach($product["variations"] as $variation){
+                echo "\n current variation: \n";
+                printRPre($variation);
+                $single_variation_to_update_id = $this->getVariationByDescription($all_variations, $variation["description"]);
+
+                if(!$variation["enable"] && $single_variation_to_update_id){
+                    $variations_to_delete[] = $single_variation_to_update_id;
+                    //continue;
+                }
+
+                if(!$variation["enable"]){
+                    continue;
+                }
+
+                if($single_variation_to_update_id){
+                    echo "\n found id! " . $single_variation_to_update_id . "\n";
+                    $variations_to_update_rest_format[] = [
+                        "id" => $single_variation_to_update_id,
+                        "regular_price" => $variation["regular_price"],
+                        "description" => $variation["description"],
+                        "attributes" => [
+                            [
+                                //"id" => $category_attribute_id,
+                                "name" => $category_attribute_name,
+                                "option" => $variation["description"]
+                            ]
+                        ]
+                    ];
+                }else{
+                    $variations_to_create_rest_format[] = [
+                        "regular_price" => $variation["regular_price"],
+                        "description" => $variation["description"],
+                        "attributes" => [
+                            [
+                                //"id" => $category_attribute_id,
+                                "name" => $category_attribute_name,
+                                "option" => $variation["description"]
+                            ]
+                        ]
+                    ];
+                }
+            }
+            echo "c";
+            echo "\nto create: \n";
+            printRPre($variations_to_create_rest_format);
+            echo "\nto update: \n";
+            printRPre($variations_to_update_rest_format);
+            echo "\nto delete: \n";
+            printRPre($variations_to_delete);
+            $res = wooUpdateVariations(
+                $product["id"],
+                $variations_to_create_rest_format,
+                $variations_to_update_rest_format,
+                $variations_to_delete
+            );
+            printRPre($res);
+            echo "d";
+        }
+
+        private function getVariationByDescription($all_variations, $variation_description){
+            foreach($all_variations as $variation){
+
+                $stripped = wp_strip_all_tags($variation["description"]);//strip_tags($variation["description"]);
+
+
+                // echo "\nComparing: \n";
+                // echo "\n". $stripped . "\n" . gettype($stripped);
+                // echo "\n$variation_description\n" . gettype($variation_description);
+                // echo var_dump($stripped);
+                // echo var_dump($variation_description);
+
+                if(strcmp($stripped, $variation_description) === 0){//strip_tags($variation["description"]) == $variation_description){
+                    //echo "\nFound matching variation! " . $variation["id"] . "\n";
+                    return $variation["id"];
+                }
+            }
+            return null;
+        }
+
+        // private function updateProductVariations($product_id, array $variations){
+
+        // }
 
         private function assocArrayFromProduct(WC_Product_Variable $product){
             return [

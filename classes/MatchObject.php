@@ -37,7 +37,15 @@
             $term = get_term_by('name', $home_club, 'product_cat');
             $term2 = get_term_by('name', $tournament, 'product_cat');
 
-            $category_ids = [$term->term_id, $term2->term_id];
+            $category_ids = [];
+
+            if($term){
+                array_push($category_ids, $term->term_id);
+            }
+
+            array_push($category_ids, $term2->term_id);
+
+            //$category_ids = [$term->term_id, $term2->term_id];
 
             return $category_ids;
         }
@@ -61,6 +69,7 @@
 
                 $variation = [
                     "enable" => $variation_enable,
+                    "description" => "Category " . $i,
                     "name" => $this->generateMatchTitle() . " - Category " . $i,
                     "regular_price" => $price,
                     "qty" => $qty,
