@@ -1,8 +1,13 @@
 <?php
 
     require_once(__DIR__."/../wp_init.php");
+
+    //Classes
     require_once("abstract/AbstractData.php");
+
+    //Functions
     require_once(__DIR__."/../functions/getImageIdOfStadium.php");
+    require_once(__DIR__."/../functions/fileExistsOnUrl.php");
 
     class MatchObject extends AbstractData {
         
@@ -57,38 +62,78 @@
         }
 
         public function generateTeamImageFilenames(){
+
+            $upload_dir = wp_upload_dir()["url"] . "/";
+
+            $ext_webp = ".webp";
+            $ext_png = ".png";
+
             $home_club = $this->get("home_club");
+            $home_club_clean = cleanStr($home_club);
+            $home_club_clean_caps = cleanStrCaps($home_club);
+
             $away_club = $this->get("away_club");
+            $away_club_clean = cleanStr($away_club);
+            $away_club_clean_caps = cleanStrCaps($away_club);
 
-            $team_1 = wp_upload_dir()["url"] . "/" . cleanstr($home_club) . ".webp";
-            $team_2 = wp_upload_dir()["url"] . "/" . cleanstr($away_club) . ".webp";
+            //Urls that will be checked
+            $home_club_urls_to_check = [
+                $upload_dir . $home_club_clean . $ext_webp,
+                $upload_dir . $home_club_clean_caps . $ext_webp,
+                $upload_dir . $home_club_clean . $ext_png,
+                $upload_dir . $home_club_clean_caps . $ext_png
+            ];
+            $away_club_urls_to_check = [
+                $upload_dir . $away_club_clean . $ext_webp,
+                $upload_dir . $away_club_clean_caps . $ext_webp,
+                $upload_dir . $away_club_clean . $ext_png,
+                $upload_dir . $away_club_clean_caps . $ext_png
+            ];
 
-            if(!file_exists_on_url($team_1)){
-                $team_1 = wp_upload_dir()["url"] . "/" . cleanstr2($home_club) . ".webp";
-                if(!file_exists_on_url($team_1)){
-                    error_log("Warning: the following club is missing .webp format image - ". $home_club);
-                    $team_1 = wp_upload_dir()["url"] . "/" . cleanstr($home_club) . ".png";
-                    if(!file_exists_on_url($team_1)){
-                        $team_1 = wp_upload_dir()["url"] . "/" . cleanstr2($home_club) . ".png";
-                    }   
-                }
+            $team_1_url = fileExistsOnUrlMultiple($home_club_urls_to_check);
+            $team_2_url = fileExistsOnUrlMultiple($away_club_urls_to_check);
+
+            if(!$team_1_url){
+                $team_1_url = "";
+            }
+            if(!$team_2_url){
+                $team_2_url = "";
             }
 
-            if(!file_exists_on_url($team_2)){
-                $team_2 = wp_upload_dir()["url"] . "/" . cleanstr2($away_club) . ".webp";
-                if(!file_exists_on_url($team_2)){
-                    error_log("Warning: the following club is missing .webp format image - ". $away_club);
-                    $team_2 = wp_upload_dir()["url"] . "/" . cleanstr($away_club) . ".png";
-                    if(!file_exists_on_url($team_2)){
-                        $team_2 = wp_upload_dir()["url"] . "/" . cleanstr2($away_club) . ".png";
-                    }
-                }
-            }
+            return [
+                $team_1_url,
+                $team_2_url
+            ];
 
-            return array(
-                $team_1,
-                $team_2
-            );
+            // $team_1 = wp_upload_dir()["url"] . "/" . cleanstr($home_club) . ".webp";
+            // $team_2 = wp_upload_dir()["url"] . "/" . cleanstr($away_club) . ".webp";
+
+            // if(!file_exists_on_url($team_1)){
+            //     $team_1 = wp_upload_dir()["url"] . "/" . cleanstr2($home_club) . ".webp";
+            //     if(!file_exists_on_url($team_1)){
+            //         error_log("Warning: the following club is missing .webp format image - ". $home_club);
+            //         $team_1 = wp_upload_dir()["url"] . "/" . cleanstr($home_club) . ".png";
+            //         if(!file_exists_on_url($team_1)){
+            //             $team_1 = wp_upload_dir()["url"] . "/" . cleanstr2($home_club) . ".png";
+            //         }   
+            //     }
+            // }
+
+            // if(!file_exists_on_url($team_2)){
+            //     $team_2 = wp_upload_dir()["url"] . "/" . cleanstr2($away_club) . ".webp";
+            //     if(!file_exists_on_url($team_2)){
+            //         error_log("Warning: the following club is missing .webp format image - ". $away_club);
+            //         $team_2 = wp_upload_dir()["url"] . "/" . cleanstr($away_club) . ".png";
+            //         if(!file_exists_on_url($team_2)){
+            //             $team_2 = wp_upload_dir()["url"] . "/" . cleanstr2($away_club) . ".png";
+            //         }
+            //     }
+            // }
+
+            // return array(
+            //     $team_1,
+            //     $team_2
+            // );
         }
 
         public function generateVariationData(){
