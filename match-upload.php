@@ -73,7 +73,7 @@ function match_upload_page_html(){
             }
 
             function cancel_upload(){
-                console.log('canceling upload');
+                //console.log('canceling
                 var request = new Request('" . $CANCEL_URL . "',
                     {
                         method: 'POST',
