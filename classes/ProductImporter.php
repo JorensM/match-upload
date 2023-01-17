@@ -69,7 +69,11 @@
                 //Determine which entries must be updated and which must be created
                 $entries_to_create = [];
                 $entries_to_update = [];
+                $entries_to_delete = [];
                 foreach($data_portion as $entry_key => $entry){
+                    //Whether the entry should not be created/should be deleted
+                    $delete_entry = !$entry["enable"];
+                    
                     $product = null;
                     if($importBy === "sku"){
                         //echo "sku: " . $entry["sku"];
@@ -80,13 +84,21 @@
                     if($product){
                         //printRPre($product);
                         $entry["id"] = $product["id"];
-                        $entries_to_update[] = $entry;
-                    }else{
+                        if(!$delete_entry){
+                            $entries_to_update[] = $entry;
+                        }else{
+                            $entries_to_delete[] = $product["id"];
+                        }
+                    }else if(!$delete_entry){
                         $entries_to_create[] = $entry;
                     }
                 }
 
-                $this->product_manager->bulkUpdateProducts($entries_to_update);
+                $this->product_manager->bulkUpdateProducts(
+                    $entries_to_create,
+                    $entries_to_update,
+                    $entries_to_delete
+                );
 
                 //Iterate through batch
             //     foreach($data_portion as $entry_key => $entry){

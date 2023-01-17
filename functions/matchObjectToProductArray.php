@@ -23,6 +23,7 @@
         $team_images = $matchObject->generateTeamImageFilenames();
 
         $output_array = [
+            "enable" => $matchObject->isEnabled(),
             "title" => $matchObject->generateMatchTitle(),
             "description" => $product_description,
             "category_ids" => $matchObject->generateCategoryIds(),

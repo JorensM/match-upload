@@ -138,6 +138,29 @@
             // );
         }
 
+        /**
+         * Whether the MatchObject has any variations with "enable" set to true
+         * 
+         * @return bool true if there are any enabled variations, false otherwise
+         */
+        public function hasEnabledVariations(){
+            $variations = $this->generateVariationData();
+
+            foreach($variations as $variation){
+                if($variation["enable"]){
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        /**
+         * Whether the MatchObject is considered enabled
+         */
+        public function isEnabled(){
+            return $this->hasEnabledVariations();
+        }
+
         public function generateVariationData(){
             $variation_data = [];
             for($i = 1; $i < 5; $i++){

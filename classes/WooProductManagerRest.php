@@ -41,37 +41,51 @@
 
         }
 
-        public function bulkUpdateProducts(array $products){
+        /**
+         * Bulk update products. Possible to create, update and delete products
+         * 
+         * @param array $products_to_create products that will be created
+         * @param array $products_to_update products that will be updated
+         * @param array $products_to_delete product ids that will be deleted
+         * 
+         * @return void
+         */
+        public function bulkUpdateProducts(array $products_to_create, array $products_to_update, array $products_to_delete){
 
             //Products converted to the REST API's format
-            $products_rest_format = [];
+            $products_to_create_rest_format = $this->productArrayToRestMultiple($products_to_create);
+            $products_to_update_rest_format = $this->productArrayToRestMultiple($products_to_update);
 
             
 
-            foreach($products as $product){
+            // foreach($products as $product){
                 
-                //Convert category ids to REST API's supported category format
-                if($product["category_ids"]){
-                    //$products_rest_format["categories"] = [];
-                    foreach($product["category_ids"] as $category_id){
-                        $product["categories"][] = [
-                            "id" => $category_id
-                        ];
-                    }
-                    unset($product["category_ids"]);
-                }
-                echo "product metadata: ";
-                printRPre($product["meta_data"]);
-                unset($product["meta_data"]);
-                unset($product["image_id"]);
-                unset($product["variations"]);
-                $products_rest_format[] = $product;
-            }
+            //     //Convert category ids to REST API's supported category format
+            //     if($product["category_ids"]){
+            //         //$products_rest_format["categories"] = [];
+            //         foreach($product["category_ids"] as $category_id){
+            //             $product["categories"][] = [
+            //                 "id" => $category_id
+            //             ];
+            //         }
+            //         unset($product["category_ids"]);
+            //     }
+            //     //echo "product metadata: ";
+            //     //printRPre($product["meta_data"]);
+            //     //unset($product["meta_data"]);
+            //     unset($product["image_id"]);
+            //     unset($product["variations"]);
+            //     $products_rest_format[] = $product;
+            // }
 
             //echo "\nrequest:\n";
             //printRPre(json_encode($products_rest_format));
 
-            $response = wooUpdateProducts($products_rest_format);
+            $response = wooUpdateProducts(
+                $products_to_create_rest_format,
+                $products_to_update_rest_format,
+                $products_to_delete
+            );
 
             // echo "\nupdated products: \n";
             // echo "<pre>";
@@ -82,13 +96,58 @@
             // printRPre($products);
 
             //Update variations
-            foreach($products as $product){
+            foreach($products_to_update as $product){
                 //echo "\nlooping\n";
                 
                 $this->updateVariations($product);
                 //$response = wooUpdateVariations($product["id"],);
             }
+
+            foreach($products_to_create as $product){
+                $this->updateVariations($product);
+            }
             //printRPre($response);
+        }
+
+        /**
+         * Convert a product array into an array supported by the REST API
+         * 
+         * @param array $product product array to convert
+         * 
+         * @return array REST API supported product
+         */
+        private function productArrayToRest(array $product){
+            //Convert category ids to REST API's supported category format
+            if($product["category_ids"]){
+                //$products_rest_format["categories"] = [];
+                foreach($product["category_ids"] as $category_id){
+                    $product["categories"][] = [
+                        "id" => $category_id
+                    ];
+                }
+                unset($product["category_ids"]);
+            }
+            //echo "product metadata: ";
+            //printRPre($product["meta_data"]);
+            //unset($product["meta_data"]);
+            unset($product["image_id"]);
+            unset($product["variations"]);
+            return $product;
+        }
+
+        /**
+         * Calls productArrayToRest multiple times
+         * 
+         * @param array $products products to convert
+         * 
+         * @return array REST API supported products
+         */
+        private function productArrayToRestMultiple(array $products){
+            $output = [];
+            foreach($products as $product){
+                $output[] = $this->productArrayToRest($product);
+            }
+            return $output;
         }
 
         private function updateVariations($product){

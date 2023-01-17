@@ -45,7 +45,16 @@
          */
         public function updateProduct($id, array $params);
 
-        public function bulkUpdateProducts(array $products);
+        /**
+         * Bulk update products. Possible to create, update and delete products
+         * 
+         * @param array $products_to_create products that will be created
+         * @param array $products_to_update products that will be updated
+         * @param array $products_to_delete product ids that will be deleted
+         * 
+         * @return void
+         */
+        public function bulkUpdateProducts(array $products_to_create, array $products_to_update, array $products_to_delete);
 
         public function getVariationByName($product_id, string $variation_name);
 
