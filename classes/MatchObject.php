@@ -8,6 +8,7 @@
     //Functions
     require_once(__DIR__."/../functions/getImageIdOfStadium.php");
     require_once(__DIR__."/../functions/fileExistsOnUrl.php");
+    require_once(__DIR__."/../functions/cleanStr.php");
 
     class MatchObject extends AbstractData {
         
@@ -92,6 +93,7 @@
 
             $team_1_url = fileExistsOnUrlMultiple($home_club_urls_to_check);
             $team_2_url = fileExistsOnUrlMultiple($away_club_urls_to_check);
+            //echo "\nteam 1 url: " . $team_1_url;
 
             if(!$team_1_url){
                 $team_1_url = "";

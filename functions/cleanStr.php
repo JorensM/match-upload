@@ -1,6 +1,22 @@
 <?php
 
     /**
+     * Replace ulmaut letters in string with regular letter
+     * 
+     * @param string $str string to convert
+     * 
+     * @return string converted string
+     */
+    function replace_umlauts(string $str){
+        $new_str = $str;
+        $new_str = str_replace("ë", "e", $new_str);
+        $new_str = str_replace("ö", "o", $new_str);
+        $new_str = str_replace("ü", "u", $new_str);
+
+        return $new_str;
+    }
+
+    /**
      * Convert a string to lowercase and strip spaces, also replace special characters with regular characters
      * FC Barcelona = fcbarcelona
      * 

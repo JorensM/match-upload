@@ -12,7 +12,7 @@
         $upload_dir = wp_upload_dir()["url"] . "/";// . "/2022/07/";
 
         $final_url = $upload_dir . $final_str . ".svg";
-        if(!fileExistsOnUrlV2($final_url)){
+        if(!fileExistsOnUrl($final_url)){
             $final_url = $upload_dir . $final_str . ".png";
         }
 
