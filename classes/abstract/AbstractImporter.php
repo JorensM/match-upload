@@ -39,7 +39,7 @@
          * Gets called in import() method before importAction()
          * Should throw error on validation fail, and return true on success.
          * 
-         * @param string $data data to be imported
+         * @param array $data data to be imported
          * 
          * @return bool true on success. 
          */

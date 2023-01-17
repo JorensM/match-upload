@@ -20,12 +20,12 @@
             return "Buy tickets for the football match " .  $home_club . " vs. " . $away_club . " and enjoy this exciting game!";
         }
 
-        public function generateMetaInfo(){
-            $this->data["title"] = $this->generateMatchTitle();
-            $this->data["description"] = $this->generateDescription();
-            $this->data["categories"] = $this->generateCategoryIds();
-            $this->data["image_id"] = $this->generateStadiumImageId();
-        }
+        // public function generateMetaInfo(){
+        //     $this->data["title"] = $this->generateMatchTitle();
+        //     $this->data["description"] = $this->generateDescription();
+        //     $this->data["categories"] = $this->generateCategoryIds();
+        //     $this->data["image_id"] = $this->generateStadiumImageId();
+        // }
 
         /**
          * Returns array of ids for categories to which this match should belong
@@ -54,6 +54,41 @@
             $stadium_name = $this->get("stadium");
 
             return getImageIdOfStadium($stadium_name);
+        }
+
+        public function generateTeamImageFilenames(){
+            $home_club = $this->get("home_club");
+            $away_club = $this->get("away_club");
+
+            $team_1 = wp_upload_dir()["url"] . "/" . cleanstr($match["home_club"]) . ".webp";
+            $team_2 = wp_upload_dir()["url"] . "/" . cleanstr($match["away_club"]) . ".webp";
+
+            if(!file_exists_on_url($team_1)){
+                $team_1 = wp_upload_dir()["url"] . "/" . cleanstr2($match["home_club"]) . ".webp";
+                if(!file_exists_on_url($team_1)){
+                    error_log("Warning: the following club is missing .webp format image - ". $match['home_club']);
+                    $team_1 = wp_upload_dir()["url"] . "/" . cleanstr($match["home_club"]) . ".png";
+                    if(!file_exists_on_url($team_1)){
+                        $team_1 = wp_upload_dir()["url"] . "/" . cleanstr2($match["home_club"]) . ".png";
+                    }   
+                }
+            }
+
+            if(!file_exists_on_url($team_2)){
+                $team_2 = wp_upload_dir()["url"] . "/" . cleanstr2($match["away_club"]) . ".webp";
+                if(!file_exists_on_url($team_2)){
+                    error_log("Warning: the following club is missing .webp format image - ". $match['away_club']);
+                    $team_2 = wp_upload_dir()["url"] . "/" . cleanstr($match["away_club"]) . ".png";
+                    if(!file_exists_on_url($team_2)){
+                        $team_2 = wp_upload_dir()["url"] . "/" . cleanstr2($match["away_club"]) . ".png";
+                    }
+                }
+            }
+
+            return array(
+                $team_1,
+                $team_2
+            );
         }
 
         public function generateVariationData(){
