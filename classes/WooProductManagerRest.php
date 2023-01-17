@@ -173,8 +173,8 @@
             $category_attribute_name = "Seat Category";
 
             foreach($product["variations"] as $variation){
-                echo "\n current variation: \n";
-                printRPre($variation);
+                //echo "\n current variation: \n";
+                //printRPre($variation);
                 $single_variation_to_update_id = $this->getVariationByDescription($all_variations, $variation["description"]);
 
                 if(!$variation["enable"] && $single_variation_to_update_id){
@@ -187,7 +187,7 @@
                 }
 
                 if($single_variation_to_update_id){
-                    echo "\n found id! " . $single_variation_to_update_id . "\n";
+                    //echo "\n found id! " . $single_variation_to_update_id . "\n";
                     $variations_to_update_rest_format[] = [
                         "id" => $single_variation_to_update_id,
                         "regular_price" => $variation["regular_price"],

@@ -54,7 +54,7 @@
             //printRPre($product);
         }
 
-        public function bulkUpdateProducts(array $products){
+        public function bulkUpdateProducts(array $products_to_create, array $products_to_update, array $products_to_delete){
             
         }
 
