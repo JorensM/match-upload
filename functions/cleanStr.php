@@ -7,7 +7,7 @@
      * 
      * @return string converted string
      */
-    function replace_umlauts(string $str){
+    function replaceUmlauts(string $str){
         $new_str = $str;
         $new_str = str_replace("ë", "e", $new_str);
         $new_str = str_replace("ö", "o", $new_str);
@@ -26,7 +26,7 @@
      */
     function cleanStr(string $str) {
         $new_string = $str;
-        $new_string = replace_umlauts($new_string);
+        $new_string = replaceUmlauts($new_string);
         $new_string = str_replace("&", "", $new_string);
         $new_string = urlencode(strtolower(str_replace(" ","",preg_replace("/([a-z])[a-z]+;/i", "$1", htmlentities($new_string)))));
         $new_string = preg_replace('/[^A-Za-z0-9\-]/', '', $new_string);
@@ -43,7 +43,7 @@
      */
     function cleanStrCaps(string $str){
         $new_string = $str;
-        $new_string = replace_umlauts($new_string);
+        $new_string = replaceUmlauts($new_string);
         $new_string = str_replace("&", "", $new_string);
         $new_string = urlencode(str_replace(" ","",preg_replace("/([a-z])[a-z]+;/i", "$1", htmlentities($new_string))));
         $new_string = preg_replace('/[^A-Za-z0-9\-]/', '', $new_string);
