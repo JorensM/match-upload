@@ -52,7 +52,7 @@
          * @param array $products_to_update products that will be updated
          * @param array $products_to_delete product ids that will be deleted
          * 
-         * @return void
+         * @return array updated products in format ["update" => [], "create" =>, "delete" => []]
          */
         public function bulkUpdateProducts(array $products_to_create, array $products_to_update, array $products_to_delete);
 

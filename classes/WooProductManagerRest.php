@@ -27,11 +27,11 @@
         }
 
         public function getProductBySku($sku){
-            $product = wooGetProducts(["sku" => $sku])[0];
+            $products = wooGetProducts(["sku" => $sku]);
 
             //printRPre($product[0]);
-            if($product){
-                return $product;
+            if(isset($products[0])){
+                return $products[0];
             }
             //if($id > 0){
                 //$product = new WC_Product_Variable($id);
@@ -107,6 +107,7 @@
                 $this->updateVariations($product);
             }
             //printRPre($response);
+            return $response;
         }
 
         /**
