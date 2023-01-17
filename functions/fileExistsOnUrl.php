@@ -17,6 +17,23 @@
         return false;
     }
 
+
+    /**
+     * Run fileExistsOnUrl multiple times
+     * 
+     * @param string[] urls to check
+     * 
+     * @return string|bool returns first url that is found, or false if none are found
+     */
+    function fileExistsOnUrlMultiple(array $urls){
+        foreach($urls as $url){
+            if(fileExistsOnUrl($url)){
+                return $url;
+            }
+        }
+        return false;
+    }
+
     /**
      * Old implementation of fileExistsOnUrl() that uses @get_headers() instead of cURL
      * 
