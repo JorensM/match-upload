@@ -5,6 +5,7 @@
     function matchObjectToProductArray(MatchObject $matchObject){
 
         $product_description = $matchObject->generateDescription();
+        $team_images = $matchObject->generateTeamImageFilenames();
 
         $output_array = [
             "title" => $matchObject->generateMatchTitle(),
@@ -14,8 +15,8 @@
             "variations" => $matchObject->generateVariationData(),
             "sku" => $matchObject->get("id"),
             "meta_data" => [
-                "1st-team-image" => null,
-                "2nd-team-image" => null,
+                "1st-team-image" => $team_images[0],
+                "2nd-team-image" => $team_images[1],
                 "tickets_products-page-short-details" => $product_description,
                 "match-date" => $matchObject->get("match_date"),
                 "match-location" => $matchObject->get("stadium"),

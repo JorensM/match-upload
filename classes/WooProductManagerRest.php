@@ -60,6 +60,8 @@
                     }
                     unset($product["category_ids"]);
                 }
+                echo "product metadata: ";
+                printRPre($product["meta_data"]);
                 unset($product["meta_data"]);
                 unset($product["image_id"]);
                 unset($product["variations"]);
@@ -81,7 +83,7 @@
 
             //Update variations
             foreach($products as $product){
-                echo "\nlooping\n";
+                //echo "\nlooping\n";
                 
                 $this->updateVariations($product);
                 //$response = wooUpdateVariations($product["id"],);
@@ -90,10 +92,10 @@
         }
 
         private function updateVariations($product){
-            echo "Updating variations for: " . $product["title"] . "\n";
+            //echo "Updating variations for: " . $product["title"] . "\n";
             $all_variations = wooGetVariations($product["id"]);//$this->getVariationByDescription()
 
-            echo "a";
+            //echo "a";
             //Variation converted to REST API format
             $variations_to_delete = [];
             $variations_to_update_rest_format = [];
@@ -106,7 +108,7 @@
                     $variations_to_delete[] = $variation["id"];
                 }
             }
-            echo "b";
+            //echo "b";
 
             $category_attribute_id = 1;
             $category_attribute_name = "Seat Category";
@@ -153,21 +155,21 @@
                     ];
                 }
             }
-            echo "c";
-            echo "\nto create: \n";
-            printRPre($variations_to_create_rest_format);
-            echo "\nto update: \n";
-            printRPre($variations_to_update_rest_format);
-            echo "\nto delete: \n";
-            printRPre($variations_to_delete);
+            // echo "c";
+            // echo "\nto create: \n";
+            // printRPre($variations_to_create_rest_format);
+            // echo "\nto update: \n";
+            // printRPre($variations_to_update_rest_format);
+            // echo "\nto delete: \n";
+            // printRPre($variations_to_delete);
             $res = wooUpdateVariations(
                 $product["id"],
                 $variations_to_create_rest_format,
                 $variations_to_update_rest_format,
                 $variations_to_delete
             );
-            printRPre($res);
-            echo "d";
+            // printRPre($res);
+            // echo "d";
         }
 
         private function getVariationByDescription($all_variations, $variation_description){

@@ -11,8 +11,7 @@
      * @param string $auth_password (optional) password for basic auth
      */
     function curlPost(string $url, array $data, array $headers = null, string $auth_username = null, string $auth_password = null){
-
-
+        $debug = false;
 
         //Final url (url + params)
         $final_url = $url;
@@ -26,10 +25,14 @@
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         }
         curl_setopt($ch, CURLOPT_POST, 1);
-        echo "\nPOST request body: \n";
-        echo "<pre>";
-        echo json_encode($data);
-        echo "<pre>";
+        //Echo request body if debug is true
+        if($debug){
+            echo "\nPOST request body: \n";
+            echo "<pre>";
+            echo json_encode($data);
+            echo "<pre>";
+        }
+        
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         if($auth_username && $auth_password){
             curl_setopt($ch, CURLOPT_USERPWD, "$auth_username:$auth_password");
