@@ -1,12 +1,19 @@
 <?php
 
-    require_once(__DIR__."/../wp_init.php");
+    require_once(__DIR__."/../../wp_init.php");
+
+    //Classes
     require_once("abstract/AbstractImporter.php");
     require_once("MatchObjectToProductSettings.php");
     require_once("WooProductManagerLegacy.php");
+
+    //Enums
+    require_once("enum/EnumSessionDataElement.php");
+
+    //Functions
     require_once(__DIR__."/../functions/wooGetProducts.php");
     require_once(__DIR__."/../functions/printRPre.php");
-    require_once("enum/EnumSessionDataElement.php");
+    
 
     class MatchObjectToProductImporter extends AbstractImporter {
 

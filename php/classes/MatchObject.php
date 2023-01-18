@@ -1,6 +1,6 @@
 <?php
 
-    require_once(__DIR__."/../wp_init.php");
+    require_once(__DIR__."/../../wp_init.php");
 
     //Classes
     require_once("abstract/AbstractData.php");
