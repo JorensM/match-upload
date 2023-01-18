@@ -107,10 +107,12 @@ class ProgressManager {
     renderProgress(the_this){
         //console.log("This: ");
         //console.log(this);
+        console.log("rendering progress");
         the_this.getProgress()
         .then(progress_data => {
 
-            if(!progress_data){
+            console.log(progress_data);
+            if(!progress_data || progress_data.finished){
                 the_this.showUploadForm();
             }else{
                 this.showProgressDiv(progress_data);
@@ -245,7 +247,8 @@ class UploadManager {
                 this.progressManager.stopRenderProgress(data.error);
             }
             if(data.success){
-                progress_end_element.innerHTML = 'upload complete!';
+                this.progressManager.setSuccessMessage("upload complete!");
+                //progress_end_element.innerHTML = 'upload complete!';
             }
             //clearInterval(interval);
             //clear_progress();
