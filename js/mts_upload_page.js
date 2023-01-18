@@ -1,14 +1,19 @@
-match_upload_form;
-cancel_button;
-progress_div;
-error_element;
+// match_upload_form = null;
+// cancel_button = null;
+// progress_div = null;
+// error_element = null;
 
-function defineElements(){
-    match_upload_form = document.getElementById("match-upload-form");
-    cancel_button = document.getElementById("cancel-button");
-    progress_div = document.getElementById("match-upload-progress");
-    error_element = document.getElementById("match-upload-error")
-}
+match_upload_form = document.getElementById("match-upload-form");
+cancel_button = document.getElementById("cancel-button");
+progress_div = document.getElementById("match-upload-progress");
+error_element = document.getElementById("match-upload-error")
+
+// function defineElements(){
+//     match_upload_form = document.getElementById("match-upload-form");
+//     cancel_button = document.getElementById("cancel-button");
+//     progress_div = document.getElementById("match-upload-progress");
+//     error_element = document.getElementById("match-upload-error")
+// }
 
 /**
  * This class manages the display of progress data during upload as well as handles error display
@@ -247,6 +252,7 @@ let constants = [];
 let progressManager = new ProgressManager();
 
 window.onload = () => {
+    defineElements();
     get_constants()
     .then(_constants => {
         constants = _constants;
