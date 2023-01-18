@@ -43,7 +43,7 @@
                     <label for='write-logs'>Write logs</label>
                 </div>
                 <br>
-                <button type='button' onclick='upload_matches()'>Upload</button>
+                <button type='button' onclick='uploadMatches()'>Upload</button>
             </form>
             <button id='cancel-button' type='button' onclick='cancel_upload()' style='display: none'>Cancel</button>
             

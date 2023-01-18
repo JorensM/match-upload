@@ -178,7 +178,7 @@ class UploadManager {
      * 
      * @returns {void}
      */
-    upload_matches(){
+    uploadMatches(){
         this.progressManager.clearError();
 
         let file = document.getElementById('match-upload-file').files[0];
@@ -240,16 +240,17 @@ class UploadManager {
 
 //let error_element = document.getElementById('match-upload-error');
 
-let progress_end_element = document.getElementById('progress-end');
+//let progress_end_element = document.getElementById('progress-end');
 
-progressDiv = document.getElementById('match-upload-progress');
-progressDiv.style.display = 'none';
+//progressDiv = document.getElementById('match-upload-progress');
+//progressDiv.style.display = 'none';
 
-let interval;
+//let interval;
 
 let constants = [];
 
 let progressManager = new ProgressManager();
+let uploadManager = new UploadManager(progressManager);
 
 window.onload = () => {
     get_constants()
@@ -293,62 +294,65 @@ function cancel_upload(){
     })
 }
 
-function upload_matches(){
-    error_element.innerHTML = '';
-    let file = document.getElementById('match-upload-file').files[0];
-    const write_logs = document.getElementById('write-logs').checked;
+function uploadMatches(){
 
-    if(file === undefined){
-        error_element.innerHTML = 'Please select a file';
-        return;
-    }
+    uploadManager.uploadMatches();
 
-    const formData = new FormData();
-    formData.append('matches-file', file);
-    console.log('write_logs: ');
-    console.log(write_logs);
-    formData.append('write-logs', write_logs);
+    // error_element.innerHTML = '';
+    // let file = document.getElementById('match-upload-file').files[0];
+    // const write_logs = document.getElementById('write-logs').checked;
 
-    var request = new Request('" . $UPLOAD_MATCHES_ACTION_URL . "',
-        {
-            method: 'POST',
-            body: formData,
-            credentials: 'same-origin'
-            // headers: {
-            //     'Content-Type': 'multipart/form-data'
-            // }
-        }
-    )
+    // if(file === undefined){
+    //     error_element.innerHTML = 'Please select a file';
+    //     return;
+    // }
+
+    // const formData = new FormData();
+    // formData.append('matches-file', file);
+    // console.log('write_logs: ');
+    // console.log(write_logs);
+    // formData.append('write-logs', write_logs);
+
+    // var request = new Request('" . $UPLOAD_MATCHES_ACTION_URL . "',
+    //     {
+    //         method: 'POST',
+    //         body: formData,
+    //         credentials: 'same-origin'
+    //         // headers: {
+    //         //     'Content-Type': 'multipart/form-data'
+    //         // }
+    //     }
+    // )
     
     
-    //let interval = setInterval(get_progress, 1000);
-    //console.log('interval: ');
-    //console.log(interval);
+    // //let interval = setInterval(get_progress, 1000);
+    // //console.log('interval: ');
+    // //console.log(interval);
     
-    //clear_progress();
+    // //clear_progress();
 
-    fetch(request)
-    .then(response => {return response.json()})
-    .then(data => {
-        console.log(data);
-        if(data.error !== ''){
-            progress_end_element.innerHTML = 'an error occured: <br>' + data.error;
-            clearInterval(interval);
-        }
-        if(data.success){
-            progress_end_element.innerHTML = 'upload complete!';
-        }
-        //clearInterval(interval);
-        //clear_progress();
-        //progress_end_element.innerHTML = 'sucessfully added products, you may now leave this page';
-    })
-    .catch(err => {
-        //console.log('ABCD');
-        console.log(err);
-        clearInterval(interval);
+    // fetch(request)
+    // .then(response => {return response.json()})
+    // .then(data => {
+    //     console.log(data);
+    //     if(data.error !== ''){
+    //         progress_end_element.innerHTML = 'an error occured: <br>' + data.error;
+    //         clearInterval(interval);
+    //     }
+    //     if(data.success){
+    //         progress_end_element.innerHTML = 'upload complete!';
+    //     }
+    //     //clearInterval(interval);
+    //     //clear_progress();
+    //     //progress_end_element.innerHTML = 'sucessfully added products, you may now leave this page';
+    // })
+    // .catch(err => {
+    //     //console.log('ABCD');
+    //     console.log(err);
+    //     clearInterval(interval);
 
-        progress_end_element.innerHTML = 'an error occured: ' + err;
-    });
+    //     progress_end_element.innerHTML = 'an error occured: ' + err;
+    // });
 }
 
 
