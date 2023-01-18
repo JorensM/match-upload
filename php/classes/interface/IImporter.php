@@ -10,6 +10,6 @@
 
         public function __construct(array $settings);
 
-        public function import($data);
+        public function import($data, ...$args);
 
     }

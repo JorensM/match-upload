@@ -32,7 +32,7 @@
          * 
          * @param array $data data to import
          */
-        protected function importAction(array $data){
+        protected function importAction(array $data, ...$args){
             
             
 
@@ -46,6 +46,8 @@
             $limit = $settings["limit"];
             //Variable by which to import
             $importBy = $settings["importBy"];
+
+            $start_time = $args[0];
 
             $logger = $this->logger;
 
@@ -72,7 +74,7 @@
             $logger->log("Will import $data_count products");
             $logger->log("");
 
-            $start_time = time();
+            //$start_time = time();
 
             $session->set(
                 EnumSessionDataElement::ProgressData,
@@ -100,7 +102,7 @@
                 $session->set(
                     EnumSessionDataElement::ProgressData,
                     [
-                        "message" => "Batch $batch_index/$batch_count",
+                        "message" => "Importing Batch $batch_index/$batch_count",
                         "new" => false,
                         "started" => true,
                         "finished" => false,

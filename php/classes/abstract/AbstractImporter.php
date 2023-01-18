@@ -13,7 +13,7 @@
             $this->setSettings($settings);
         }
 
-        public function import($data){
+        public function import($data, ...$args){
             $this->validateAction($data);
             return $this->importAction($data);
         }
@@ -32,7 +32,7 @@
          * 
          * @return bool true on success. 
          */
-        abstract protected function importAction(array $data);
+        abstract protected function importAction(array $data, ...$args);
 
         /**
          * Validation action used to validate whether specified data is correct.

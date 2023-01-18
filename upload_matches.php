@@ -4,6 +4,7 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
+    //Classes
     require_once("classes/SessionDataManager.php");
     require_once("classes/CsvToIDataConverter.php");
     require_once("classes/UploadsManager.php");
@@ -12,13 +13,16 @@
     require_once("classes/MTSLogger.php");
     require_once("classes/ProductImporter.php");
 
+    //Enums
     require_once("classes/enum/EnumSessionDataElement.php");
 
+    //Functions
     require_once("functions/matchObjectToProductArrayMany.php");
+    require_once("functions/setProgressMessage.php");
 
     //echo "hello";
 
-    
+    $start_time = time();
 
     $write_logs = isset($_POST["write-logs"]) && !($_POST["write-logs"] === "false" || $_POST["write-logs"] === "0");
 
@@ -205,6 +209,22 @@
         "importBy" => "sku"
     ]);
 
+    // $session->set(
+    //     EnumSessionDataElement::ProgressData,
+    //     [
+    //         "message" => "Starting import",
+    //         "new" => false,
+    //         "started" => true,
+    //         "finished" => false,
+    //         "start_time" => $start_time,
+    //         "end_time" => time(),
+    //         "error" => false,
+    //         "error_message" => ""
+    //     ]
+    // );
+
+    setProgressMessage($session, "Starting import", true, false, $start_time);
+        
     //Validate file and create file stream
     try {
         $uploadsManager->validateFile($matches_file_name, [
@@ -242,7 +262,7 @@
     //printRPre(json_encode($matches_products_arr));
 
     try {
-        $productImporter->import($matches_products_arr);
+        $productImporter->import($matches_products_arr, $start_time);
     }catch(Exception $e){
         error(new MyException("Error importing matches: " . $e->getMessage()));
     }

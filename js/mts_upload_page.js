@@ -216,7 +216,7 @@ class ProgressManager {
         cancel_button.style.display = "flex";
         progress_div.style.display = "flex";
         progress_message.innerHTML = progress_data.message;
-        progress_time.innerHTML = (progress_data.end_time - progress_data.start_time) / 1000;
+        progress_time.innerHTML = progress_data.end_time - progress_data.start_time;
     }
 }
 
