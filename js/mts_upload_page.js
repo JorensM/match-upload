@@ -7,8 +7,10 @@ let match_upload_form = document.getElementById("match-upload-form");
 let match_upload_form_submit_button = document.getElementById("match-upload-submit");
 let cancel_button = document.getElementById("cancel-button");
 let progress_div = document.getElementById("match-upload-progress");
+let progress_message = document.getElementById("progress-message");
 let error_element = document.getElementById("match-upload-error");
 let success_element = document.getElementById("match-upload-success");
+let neutral_element = document.getElementById("match-upload-neutral");
 
 // function defineElements(){
 //     match_upload_form = document.getElementById("match-upload-form");
@@ -47,6 +49,7 @@ class ProgressManager {
      * @returns {void}
      */
     stopRenderProgress(err = null){
+        console.log("stopping render progress");
         clearInterval(this.interval);
         this.showUploadForm();
         if(err){
@@ -60,8 +63,10 @@ class ProgressManager {
      * @returns {void}
      */
     startRenderProgress(){
+        
         this.stopRenderProgress();
-        this.interval = setInterval(this.renderProgress(this), 1000);
+        console.log("starting render progress");
+        this.interval = setInterval(() => this.renderProgress(this), 1000);
     }
 
     /**
@@ -118,8 +123,8 @@ class ProgressManager {
                 this.showProgressDiv(progress_data);
             }
 
-            console.log("progress data: ");
-            console.log(progress_data);
+            //console.log("progress data: ");
+            //console.log(progress_data);
         })
         .catch(err => {
             console.error("Could not fetch progress data");
@@ -148,11 +153,12 @@ class ProgressManager {
     }
 
     /**
-     * Set error message and clear success message
+     * Set error message and clear other messages
      * 
      * @param {string} str string to set the error message to
      */
     setError(str){
+        this.clearNeutralMessage();
         this.clearSuccessMessage();
         error_element.innerHTML = str;
     }
@@ -167,15 +173,36 @@ class ProgressManager {
     }
 
     /**
-     * Set success message and clear error message
+     * Set success message and clear other messages
      * 
      * @param {string} str message
      * 
      * @returns {void}
      */
     setSuccessMessage(str){
+        this.clearNeutralMessage();
         this.clearError();
         success_element.innerHTML = str
+    }
+
+    /**
+     * Clear the neutral message
+     * 
+     * @returns {void}
+     */
+    clearNeutralMessage(){
+        neutral_element.innerHTML = "";
+    }
+
+    /**
+     * Set neutral message and clear other messages
+     * 
+     * @param {string} str message
+     */
+    setNeutralMessage(str){
+        this.clearError();
+        this.clearSuccessMessage();
+        neutral_element.innerHTML = str;
     }
 
     /**
@@ -187,6 +214,7 @@ class ProgressManager {
         match_upload_form.style.display = "none";
         cancel_button.style.display = "flex";
         progress_div.style.display = "flex";
+        progress_message.innerHTML = progress_data.message;
     }
 }
 
@@ -238,7 +266,7 @@ class UploadManager {
         //console.log(interval);
         
         //clear_progress();
-    
+        this.progressManager.setNeutralMessage("Starting upload, please wait...");
         fetch(request)
         .then(response => {return response.json()})
         .then(data => {
