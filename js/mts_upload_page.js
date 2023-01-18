@@ -1,7 +1,14 @@
-match_upload_form = document.getElementById("match-upload-form");
-cancel_button = document.getElementById("cancel-button");
-progress_div = document.getElementById("match-upload-progress");
-error_element = document.getElementById("match-upload-error")
+match_upload_form;
+cancel_button;
+progress_div;
+error_element;
+
+function defineElements(){
+    match_upload_form = document.getElementById("match-upload-form");
+    cancel_button = document.getElementById("cancel-button");
+    progress_div = document.getElementById("match-upload-progress");
+    error_element = document.getElementById("match-upload-error")
+}
 
 /**
  * This class manages the display of progress data during upload as well as handles error display
