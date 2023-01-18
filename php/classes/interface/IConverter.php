@@ -20,7 +20,19 @@
          */
         public function setSettings(array $settings);
 
+        /**
+         * Convert file
+         * 
+         * @param any $from file to convert from
+         * 
+         * @return void
+         */
         public function convert($from);
 
+        /**
+         * Retrieve the result of the latest conversion
+         * 
+         * @return any result of conversion
+         */
         public function getResult();
     }
