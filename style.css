@@ -21,3 +21,7 @@
 .match-upload-error{
     color: red;
 }
+
+.match-upload-success{
+    color: green;
+}

@@ -6,7 +6,8 @@
 let match_upload_form = document.getElementById("match-upload-form");
 let cancel_button = document.getElementById("cancel-button");
 let progress_div = document.getElementById("match-upload-progress");
-let error_element = document.getElementById("match-upload-error")
+let error_element = document.getElementById("match-upload-error");
+let success_element = document.getElementById("match-upload-success");
 
 // function defineElements(){
 //     match_upload_form = document.getElementById("match-upload-form");
@@ -144,12 +145,34 @@ class ProgressManager {
     }
 
     /**
-     * Set error message
+     * Set error message and clear success message
      * 
      * @param {string} str string to set the error message to
      */
     setError(str){
+        this.clearSuccessMessage();
         error_element.innerHTML = str;
+    }
+
+    /**
+     * Clear success message
+     * 
+     * @returns {void}
+     */
+    clearSuccessMessage(){
+        success_element.innerHTML = "";
+    }
+
+    /**
+     * Set success message and clear error message
+     * 
+     * @param {string} str message
+     * 
+     * @returns {void}
+     */
+    setSuccessMessage(str){
+        this.clearError();
+        success_element.innerHTML = str
     }
 
     /**
@@ -218,8 +241,7 @@ class UploadManager {
         .then(data => {
             console.log(data);
             if(data.error !== ''){
-                progress_end_element.innerHTML = 'an error occured: <br>' + data.error;
-                clearInterval(interval);
+                this.progressManager.stopRenderProgress(data.error);
             }
             if(data.success){
                 progress_end_element.innerHTML = 'upload complete!';
