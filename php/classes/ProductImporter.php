@@ -276,7 +276,7 @@
             if($count){
                 $total += $count;
                 $ids = [];
-                foreach($response as $product){
+                foreach($response[$key] as $product){
                     $ids[] = $product["id"];
                 }
                 $logger->log($prefix . $count . " Products: " . implode(", ", $ids));
