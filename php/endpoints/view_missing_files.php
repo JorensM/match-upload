@@ -1,55 +1,29 @@
 <?php
 
-    require_once("wp_init.php");
+    //Core
+    require_once(__DIR__."/../../wp_init.php");
+
+    //Functions
     require_once(__DIR__."/../functions/fileExistsOnUrl.php");
+    require_once(__DIR__."/../functions/getMissingProductFiles.php");
+    require_once(__DIR__."/../functions/printRPre.php");
 
-    $products = wc_get_products(array("limit" => -1));
+    $products = wc_get_products(array("limit" => -1, "ignore_alteration" => true));
 
-    $missing_stadiums = [];
-    $missing_teams = [];
+    echo count($products) . "\n";
 
-    echo "Locating missing files, this will take a minute or two...";
+    echo "Locating missing files, this will take a minute or two...\n";
+
+    //echo gettype($products) . "\n";
+    //echo get_class($products[0]) . "\n";
 
     //Find missing files
-    foreach($products as $product){
-        //Find missing stadium images
-        $img = $product->get_image("woocommerce_thumbnail", null, false);
-        if($img === ""){
-            $skip = false;
-            $stadium_name = $product->get_meta("match-location");
-            foreach($missing_stadiums as $missing_stadium){
-                if($missing_stadium === $stadium_name){
-                    $skip = true;
-                }
-            }
-            if(!$skip){
-                array_push($missing_stadiums, $stadium_name);
-            }
-        }
+    $missing_files = getMissingProductFiles($products);
 
-        //Find missing club images
-        $team_1_img = $product->get_meta("1st-team-image");
-        $team_2_img = $product->get_meta("2nd-team-image");
+    //printRPre($missing_files);
 
-        $team_images = [$team_1_img, $team_2_img];
-
-        foreach($team_images as $team_image){
-            
-            if(!fileExistsOnUrl($team_image)){
-                $filename = basename($team_image);
-                $skip = false;
-                foreach($missing_teams as $missing_team){
-                    if($missing_team === $filename){
-                        $skip = true;
-                    }
-                }
-                if(!$skip){
-                    array_push($missing_teams, $filename);
-                }
-            }
-        }
-    }
-
+    $missing_stadiums = $missing_files["missing_stadiums"];
+    $missing_teams = $missing_files["missing_teams"];
 
     //Echo missing stadium files
     echo "<h4>Missing Stadium images</h4>";

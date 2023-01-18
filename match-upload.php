@@ -9,6 +9,7 @@
     //Functions
     require_once("const.php");
     require_once("php/functions/getHiddenCategoryIds.php");
+    require_once("php/functions/printRPre.php");
 
     //Init settings
     function match_upload_settings_init(){
@@ -228,12 +229,18 @@ function mts_alter_query($query){
     //     echo "</pre>";
     // }
     
+    $dont_alter = $query->get("ignore_alteration");
+
     //Don't alter query if it's a REST API call
-    if( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+    if( (defined( 'REST_REQUEST' ) && REST_REQUEST) || $dont_alter ) {
         return $query;
     }
 
     $is_product = $query->get("post_type") === "product" || (is_array($query->get("post_type")) && in_array("product", $query->get("post_type")));
+
+    //echo "hello";
+
+    //printRPre($query);
 
     //echo "hello";
     // if($is_product){
