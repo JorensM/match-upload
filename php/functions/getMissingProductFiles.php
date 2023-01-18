@@ -15,6 +15,7 @@
         $missing_stadiums = [];
         $missing_teams = [];
 
+        //Loop through passed products
         foreach($products as $product){
             //Find missing stadium images
             //Retrive image of product
@@ -42,23 +43,19 @@
 
             $team_images = [$team_1_img, $team_2_img];
 
-            //echo "Checking " . $product->get_id() . "\n";
-            //printRPre($team_images);
-
-            // if(
-            //     (!$team_1_img || $team_1_img === "") ||
-            //     (!$team_2_img || $team_2_img === "")
-            // ){
-
-            // }
-
+            //Loop through each team club image (only 2 iterations)
             foreach($team_images as $index => $team_image){
 
+                //Check if file exists on url of team image
                 if(!fileExistsOnUrl($team_image)){
+                    //If file doesn't exist, extract the filename from the
+                    //team image variable. If team image variable is an empty string
+                    //set filename to the team's name that is missing the file
                     $filename = basename($team_image);
                     if(!$team_image || $team_image === ""){
                         $filename = teamNamesFromTitle($product->get_title())[$index];
                     }
+                    //Check if $missing_teams already has an entry of this team
                     $skip = false;
                     foreach($missing_teams as $missing_team){
                         if($missing_team === $filename){
@@ -66,12 +63,14 @@
                         }
                     }
                     if(!$skip){
+                        //If $missing_teams doesn't have entry for this team, then add it
                         array_push($missing_teams, $filename);
                     }
                 }
             }
         }
 
+        //Return missing stadiums and teams
         return [
             "missing_stadiums" => $missing_stadiums,
             "missing_teams" => $missing_teams
