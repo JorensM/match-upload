@@ -6,235 +6,67 @@
      * Developer: JorensM
      */
 
-//Requires
-require_once("const.php");
-require_once("update_product_visibility_fn.php");
-require_once("get_hidden_category_ids.php");
+    //Requires
+    require_once("const.php");
+    require_once("update_product_visibility_fn.php");
+    require_once("get_hidden_category_ids.php");
 
-//Init settings
-function match_upload_settings_init(){
+    //Init settings
+    function match_upload_settings_init(){
 
-}
+    }
 
-//Init settings page
-function match_upload_settings_page(){
-    add_menu_page("Match Upload", "Match Upload", "manage_options", "match_upload_page", "match_upload_page_html");
-    add_submenu_page("match_upload_page", "Logs", "Logs", "manage_options", "match_upload_logs", "match_upload_logs_html");
-    add_submenu_page("match_upload_page", "Options", "Options", "manage_options", "match_upload_options", "match_upload_options_html");
-}
+    //Init settings page
+    function match_upload_settings_page(){
+        add_menu_page("Match Upload", "Match Upload", "manage_options", "match_upload_page", "match_upload_page_html");
+        add_submenu_page("match_upload_page", "Logs", "Logs", "manage_options", "match_upload_logs", "match_upload_logs_html");
+        add_submenu_page("match_upload_page", "Options", "Options", "manage_options", "match_upload_options", "match_upload_options_html");
+    }
 
-add_action("admin_menu", "match_upload_settings_page");
+    add_action("admin_menu", "match_upload_settings_page");
 
-//Settings page HTML
-function match_upload_page_html(){
-    global $UPLOAD_MATCHES_ACTION_URL;
-    global $LOAD_PROGRESS_URL;
-    global $CANCEL_URL;
-    global $LOGS_URL;
+    //Settings page HTML
+    function match_upload_page_html(){
+        global $UPLOAD_MATCHES_ACTION_URL;
+        global $LOAD_PROGRESS_URL;
+        global $CANCEL_URL;
+        global $LOGS_URL;
+        global $JS_UPLOAD_PAGE;
 
-    echo 
-        "<form id='match-upload-form' class='upload-form' action='" . $UPLOAD_MATCHES_ACTION_URL . "' method='post' enctype='multipart/form-data'>
-            <label for='matches-file'>Upload matches file</label>
-            <input id='match-upload-file' type='file' name='matches-file' required>
-            <br>
-            <div style='display: flex;align-items: center;'>
-                <input type='checkbox' id='write-logs' name='write-logs' checked>
-                <label for='write-logs'>Write logs</label>
-            </div>
-            <br>
-            <button type='button' onclick='upload_matches()'>Upload</button>
-        </form>
-        <button id='cancel-button' type='button' onclick='cancel_upload()' style='display: none'>Cancel</button>
-        <span id='match-upload-error' class='match-upload-error'></span>
-        <div class='match-upload-progress' id='match-upload-progress'>
-            <span id='progress-message'></span><br>
-            <span id='progress-index'></span><br>
-            <span id='progress-title'></span><br>
-            <span id='progress-status'></span><br>
-            <span>Time elapsed: <span id='progress-time'></span> seconds</span><br>
-        </div>
-        <div id='match-upload-end' style='flex-direction: column'>
-            <span id='progress-end'></span><br>
-            <span>Time to complete: <span id='progress-end-time'></span> seconds<span><br>
-        </div>
-        <script>
-            let error_element = document.getElementById('match-upload-error');
-
-            let progress_end_element = document.getElementById('progress-end');
-            matchUploadForm = document.getElementById('match-upload-form');
-            progressDiv = document.getElementById('match-upload-progress');
-            progressDiv.style.display = 'none';
+        echo 
+            "<form id='match-upload-form' class='upload-form' action='" . $UPLOAD_MATCHES_ACTION_URL . "' method='post' enctype='multipart/form-data'>
+                <label for='matches-file'>Upload matches file</label>
+                <input id='match-upload-file' type='file' name='matches-file' required>
+                <br>
+                <div style='display: flex;align-items: center;'>
+                    <input type='checkbox' id='write-logs' name='write-logs' checked>
+                    <label for='write-logs'>Write logs</label>
+                </div>
+                <br>
+                <button type='button' onclick='upload_matches()'>Upload</button>
+            </form>
+            <button id='cancel-button' type='button' onclick='cancel_upload()' style='display: none'>Cancel</button>
             
-            let interval;
-            window.onload = () => {
-                interval = setInterval(get_progress, 1000);
+            <div class='match-upload-progress' id='match-upload-progress'>
+                <span id='progress-message'></span><br>
+                <!-- <span id='progress-index'></span><br>
+                <span id='progress-title'></span><br>
+                <span id='progress-status'></span><br> -->
+                <span>Time elapsed: <span id='progress-time'></span> seconds</span><br>
+            </div>
+            <!-- <div id='match-upload-end' style='flex-direction: column'>
+                <span id='progress-end'></span><br>
+                <span>Time to complete: <span id='progress-end-time'></span> seconds<span><br>
+            </div> -->
+            <span id='match-upload-error' class='match-upload-error'></span>
+            <script src=" . $JS_UPLOAD_PAGE . "></script>
+            ";
 
-                clear_progress();
-            }
-
-            function cancel_upload(){
-                //console.log('canceling
-                var request = new Request('" . $CANCEL_URL . "',
-                    {
-                        method: 'POST',
-                        credentials: 'same-origin'
-                    }
-                );
-
-                fetch(request)
-                .catch(err => {
-                    console.log('cancel error');
-                    console.log(err);   
-                })
-            }
-
-            function upload_matches(){
-                error_element.innerHTML = '';
-                let file = document.getElementById('match-upload-file').files[0];
-                const write_logs = document.getElementById('write-logs').checked;
-
-                if(file === undefined){
-                    error_element.innerHTML = 'Please select a file';
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append('matches-file', file);
-                console.log('write_logs: ');
-                console.log(write_logs);
-                formData.append('write-logs', write_logs);
-
-                var request = new Request('" . $UPLOAD_MATCHES_ACTION_URL . "',
-                    {
-                        method: 'POST',
-                        body: formData,
-                        credentials: 'same-origin'
-                        // headers: {
-                        //     'Content-Type': 'multipart/form-data'
-                        // }
-                    }
-                )
-                
-                
-                //let interval = setInterval(get_progress, 1000);
-                //console.log('interval: ');
-                //console.log(interval);
-                
-                //clear_progress();
-
-                fetch(request)
-                .then(response => {return response.json()})
-                .then(data => {
-                    console.log(data);
-                    if(data.error !== ''){
-                        progress_end_element.innerHTML = 'an error occured: <br>' + data.error;
-                        clearInterval(interval);
-                    }
-                    if(data.success){
-                        progress_end_element.innerHTML = 'upload complete!';
-                    }
-                    //clearInterval(interval);
-                    //clear_progress();
-                    //progress_end_element.innerHTML = 'sucessfully added products, you may now leave this page';
-                })
-                .catch(err => {
-                    //console.log('ABCD');
-                    console.log(err);
-                    clearInterval(interval);
-
-                    progress_end_element.innerHTML = 'an error occured: ' + err;
-                });
-            }
-
-            function get_progress(){
-                var request = new Request('" . $LOAD_PROGRESS_URL. "',
-                    {
-                        method: 'POST',
-                        credentials: 'same-origin'
-                    }
-                )
-
-                fetch(request)
-                .then(response => {return response.json()})
-                .then(data => {
-                    console.log('progress data: ');
-                    console.log(data);
-                    if(data.error){
-                        progress_end_element.innerHTML = 'an error occured: <br>' + data.error_message;
-                        clearInterval(interval);
-                    }else{
-                        render_progress(data.message, data.started, data.finished, data.start_time, data.end_time);
-                    }
-                })
-                .catch(err => {
-                    console.log('err');
-                    console.log(err);
-                });
-            }
-
-            function render_progress(message, started, finished, start_time, end_time){
-                indexElement = document.getElementById('progress-index');
-                titleElement = document.getElementById('progress-title');
-                statusElement = document.getElementById('progress-status');
-                cancelButton = document.getElementById('cancel-button');
-                progressTimeElement = document.getElementById('progress-time');
-                progressEndDiv = document.getElementById('match-upload-end');
-                messageElement = document.getElementById('progress-message');
-                
-
-                progressEndDiv.style.display = 'none';
-
-                console.log(start_time);
-                console.log(end_time);
-
-                progressEndTimeElement = document.getElementById('progress-end-time');
-
-                if(finished){
-                    progressEndDiv.style.display = 'flex';
-                    document.getElementById('progress-end').innerHTML = 'Upload complete!';
-                    cancelButton.style.display = 'none';
-                    matchUploadForm.style.display = 'flex';
-                    progressEndTimeElement.innerHTML = end_time - start_time;
-                    progressDiv.style.display = 'none';
-                }
-                if(started){
-                    progressDiv.style.display = 'flex';
-                    cancelButton.style.display = 'block';
-                    matchUploadForm.style.display = 'none';
-                    messageElement.innerHTML = message;
-                    //document.getElementById('progress-index').innerHTML = index;
-                    //document.getElementById('progress-title').innerHTML = title;
-                    if(status === true){
-                        //document.getElementById('progress-status').innerHTML = 'Product doesn\'t exist, adding';
-                    }else{
-                        //document.getElementById('progress-status').innerHTML = 'Product already exists, updating';
-                    }
-
-                    progressTimeElement.innerHTML = end_time - start_time;
-                }else{
-                    cancelButton.style.display = 'none';
-                    indexElement.innerHTML = '';
-                    titleElement.innerHTML = '';
-                    statusElement.innerHTML = '';
-                    matchUploadForm.style.display = 'flex';
-                }
-                
-            }
-
-            function clear_progress(){
-                document.getElementById('progress-index').innerHTML = '';
-                document.getElementById('progress-title').innerHTML = '';
-                document.getElementById('progress-status').innerHTML = '';
-                progress_end_element.innerHTML = '';
-            }
-        </script>
-        ";
-
-    // echo
-    //     "<form action='" . plugin_dir_url(__FILE__) . "test_meta_box.php" . "' method='post'>
-    //         <input type='submit'>Test Meta Box</input>
-    //     </form>";
-}
+        // echo
+        //     "<form action='" . plugin_dir_url(__FILE__) . "test_meta_box.php" . "' method='post'>
+        //         <input type='submit'>Test Meta Box</input>
+        //     </form>";
+    }
 
 function match_upload_logs_html(){
     global $LOGS_URL;

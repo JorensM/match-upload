@@ -18,4 +18,18 @@
     $CHECK_CLUB_ICONS_URL = plugin_dir_url(__FILE__) . "check_club_icons.php";
     //$UPDATE_VISIBILITY_FN_URL = plugin_dir_url(__FILE__) . "update_product_visibility_fn.php";
 
+    //JavaScript
+    $JS_UPLOAD_PAGE = plugin_dir_url(__FILE__) . "js/mts_upload_page.js";
+
+    //New format
+    $const = [
+        "js" => [
+            "upload_page" => $JS_UPLOAD_PAGE
+        ],
+        "endpoints" => [
+            "upload_matches" => $UPLOAD_MATCHES_ACTION_URL,
+            "load_progress" => $LOAD_PROGRESS_URL
+        ]
+    ];
+
     $MANAGE_STOCK = false;
