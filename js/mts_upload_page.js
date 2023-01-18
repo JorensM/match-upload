@@ -253,9 +253,10 @@ class UploadManager {
         .catch(err => {
             //console.log('ABCD');
             console.log(err);
-            clearInterval(interval);
+            this.progressManager.stopRenderProgress("an error occured: " + err);
+            //clearInterval(interval);
     
-            progress_end_element.innerHTML = 'an error occured: ' + err;
+            //progress_end_element.innerHTML = 'an error occured: ' + err;
         });
     }
 }
