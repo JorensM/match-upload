@@ -1,6 +1,6 @@
 <?php
 
-    require_once("wp_init.php");
+    require_once(__DIR__."/../../wp_init.php");
 
     global $wpdb;
 

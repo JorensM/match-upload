@@ -14,13 +14,8 @@
 
     echo "Locating missing files, this will take a minute or two...\n";
 
-    //echo gettype($products) . "\n";
-    //echo get_class($products[0]) . "\n";
-
     //Find missing files
     $missing_files = getMissingProductFiles($products);
-
-    //printRPre($missing_files);
 
     $missing_stadiums = $missing_files["missing_stadiums"];
     $missing_teams = $missing_files["missing_teams"];

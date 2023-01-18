@@ -1,44 +1,20 @@
 <?php
     
-    require_once("wp_init.php");
+    //require_once("wp_init.php");
+
+    //Functions
+    require_once(__DIR__."/../functions/getMissingProductData.php");
+
 
     $products = wc_get_products(array("limit" => -1));
 
-    $missing_data_products = [];
+    $missing_data_products = getMissingProductData($products);
 
-    foreach($products as $product){
-
-        $title = $product->get_title();
-        $match_time = $product->get_meta("match-time");
-        $match_date = $product->get_meta("match-date");
-        $match_location = $product->get_meta("match-location");
-        $match_championship = $product->get_meta("championship-name");
-
-        $missing_data = [];
-
-        if($match_time === null || $match_time === ""){
-            array_push($missing_data, "Time");
-        }
-
-        if($match_date === null || $match_date === ""){
-            array_push($missing_data, "Date");
-        }
-
-        if($match_location === null || $match_location === ""){
-            array_push($missing_data, "Location");
-        }
-
-        if($match_championship === null || $match_championship === ""){
-            array_push($missing_data, "Championship name");
-        }
-
-        if(count($missing_data) > 0){
-            array_push($missing_data_products, array("title" => $title, "data" => $missing_data));
-        }
-
-    }
-
+    
+    //Check if there is any missing data
     if(count($missing_data_products) > 0){
+        //If there is missing data, then loop through each entry
+        //and output which data is missing
         foreach($missing_data_products as $product){
             echo $product["title"] . "<br>";
             foreach($product["data"] as $entry){
@@ -49,6 +25,7 @@
         }
     }
     else{
+        //If there is no missing data, output message
         echo "No missing data found";
     }
     
