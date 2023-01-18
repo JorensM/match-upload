@@ -6,10 +6,10 @@
      * Developer: JorensM
      */
 
-    //Requires
+    //Functions
     require_once("const.php");
     require_once("update_product_visibility_fn.php");
-    require_once("get_hidden_category_ids.php");
+    require_once("php/functions/getHiddenCategoryIds.php");
 
     //Init settings
     function match_upload_settings_init(){
@@ -220,19 +220,6 @@ function mts_apply_head(){
 
 add_action("wp_head", "mts_apply_head");
 
-// function update_product_visibility($category_id){
-
-// }
-
-// On category update
-
-function mts_after_category_update($term_id, $tt_id){
-    //update_product_visiblity($term_id);
-    //error_log("term_id: $term_id, tt_id: $tt_id");
-}
-
-add_action("edited_product_cat", "mts_after_category_update", 10, 2);
-
 //Alter query to exclude posts that are outdated, or whose category is hidden
 function mts_alter_query($query){
     
@@ -305,7 +292,7 @@ function mts_alter_query($query){
 
         //Hide posts that belong to a hidden category
 
-        $hidden_cat_ids = get_hidden_category_ids();
+        $hidden_cat_ids = getHiddenCategoryIds();
 
         $original_tax_query = $query->get( 'tax_query', [] );
 

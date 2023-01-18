@@ -4,44 +4,18 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
-    //Classes
-    require_once("./classes/DataEntry.php");
-    require_once("./classes/DataEntryChecker.php");
-    require_once("./classes/DataEntryParams.php");
-    require_once("./classes/SessionDataManager.php");
-    require_once("./classes/SessionData.php");
-    require_once("./classes/SessionDataEntry.php");
+    //Core
+    require_once("wp_init.php");
 
     //Functions
-    require_once("./functions/echoNl.php");
-    require_once("./functions/printRPre.php");
+    require_once("php/functions/getHiddenCategoryIds.php");
+    require_once("php/functions/printRPre.php");
 
-    session_start();
+    $cat_test =get_terms(array(
+        "taxonomy" => "product_cat",
+        "meta_key" => "hide",
+    ));
 
-    $session = new SessionDataManager($_SESSION);
-
-    session_write_close();
-
-    //printRPre($_SESSION);
+    printRPre($cat_test);
 
 
-    session_start();
-    printRPre($_SESSION);
-    session_write_close();
-
-    $session->set("hello", "yo123hhbbbbh");
-
-    $session->setEntries("test",
-        [
-            "first" => "ayy123",
-            "second" => "hey123"
-        ]
-    );
-
-    session_start();
-    printRPre($_SESSION);
-    session_write_close();
-
-    $output = $session->getEntries("test", ["first", "second"]);
-
-    printRPre($output);
