@@ -219,7 +219,7 @@ class UploadManager {
         console.log(write_logs);
         formData.append('write-logs', write_logs);
     
-        var request = new Request(constants.upload_matches,
+        var request = new Request(constants.endpoints.upload_matches,
             {
                 method: 'POST',
                 body: formData,
