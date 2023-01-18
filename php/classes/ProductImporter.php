@@ -53,8 +53,6 @@
 
             $logger = $this->logger;
 
-            $logger->log("Start time: " . strval($start_time));
-
             //Remove elements that are above limit count
             $data = array_slice($data, 0, $limit);
 
