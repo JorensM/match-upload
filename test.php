@@ -11,11 +11,12 @@
     require_once("php/functions/getHiddenCategoryIds.php");
     require_once("php/functions/printRPre.php");
 
-    $cat_test =get_terms(array(
+    $cat_test = get_terms(array(
         "taxonomy" => "product_cat",
-        "meta_key" => "hide",
+        //"meta_key" => "hide",
     ));
-
+    echo "a";
+    echo count($cat_test) . "\n";
     printRPre($cat_test);
 
 

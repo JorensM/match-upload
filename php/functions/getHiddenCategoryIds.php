@@ -7,20 +7,23 @@
      */
     function getHiddenCategoryIds(){
 
-        //Retrieve categories
-        $hidden_categories = get_terms(array(
+        //Retrieve all categories
+        $all_categories = get_terms(array(
             "taxonomy" => "product_cat",
-            "meta_key" => "hide",
         ));
 
+        //Ids array that will be returned
         $ids = [];
 
-        foreach($hidden_categories as $cat){
+        //Loop through each category
+        foreach($all_categories as $cat){
             
+            //Retrieve meta data of category
             $meta = get_term_meta($cat->term_id);
 
+            //Check if "hide" meta field is set to true
             if(isset($meta["hide"][0]) && $meta["hide"][0] === "true"){
-                //echo "Cat is hidden<br>";
+                //If "hide" is set to true, add the current category's id to $ids
                 array_push($ids, $cat->term_id);
             }
         }
