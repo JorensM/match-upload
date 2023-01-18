@@ -43,7 +43,7 @@
          * 
          * @param array $data data to import
          */
-        protected function importAction(array $data){
+        protected function importAction(array $data, ...$args){
             
             
 
@@ -194,7 +194,7 @@
         private function compareProductToMatchObject($product_id, MatchObject $match_object){
 
             $product = $this->product_manager->getProduct($product_id);
-            $match_object->generateMetaInfo();
+            //$match_object->generateMetaInfo();
 
             $differences = [];
 
