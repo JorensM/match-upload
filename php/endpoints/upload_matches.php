@@ -194,13 +194,6 @@
         ]
     );
 
-    $matchToProduct = new MatchObjectToProductImporter([
-        "limit" => 10,
-        "batch_size" => 80,
-        "session" => $session,
-        "logger" => $logger,
-    ]);
-
     $productImporter = new ProductImporter([
         "limit" => 40,
         "batch_size" => 10,
