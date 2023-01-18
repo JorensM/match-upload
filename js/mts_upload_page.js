@@ -4,6 +4,7 @@
 // error_element = null;
 
 let match_upload_form = document.getElementById("match-upload-form");
+let match_upload_form_submit_button = document.getElementById("match-upload-submit");
 let cancel_button = document.getElementById("cancel-button");
 let progress_div = document.getElementById("match-upload-progress");
 let error_element = document.getElementById("match-upload-error");
@@ -259,6 +260,20 @@ class UploadManager {
             //progress_end_element.innerHTML = 'an error occured: ' + err;
         });
     }
+
+    /**
+     * Enable the submit button
+     */
+    enableSubmitButton(){
+        match_upload_form_submit_button.disabled = false;
+    }
+
+    /**
+     * Disable the submit button
+     */
+    disableSubmitButton(){
+        match_upload_form_submit_button.disabled = true;
+    }
 }
 
 //let error_element = document.getElementById('match-upload-error');
@@ -275,11 +290,13 @@ let constants = [];
 let progressManager = new ProgressManager();
 let uploadManager = new UploadManager(progressManager);
 
+uploadManager.disableSubmitButton();
+
 window.onload = () => {
     get_constants()
     .then(_constants => {
         constants = _constants;
-
+        uploadManager.enableSubmitButton();
         progressManager.init();
 
         //interval = setInterval(get_progress, 1000);
