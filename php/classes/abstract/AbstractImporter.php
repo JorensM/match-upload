@@ -15,7 +15,7 @@
 
         public function import($data, ...$args){
             $this->validateAction($data);
-            return $this->importAction($data);
+            return $this->importAction($data, ...$args);
         }
 
         //public function &settings(){

@@ -49,7 +49,11 @@
 
             $start_time = $args[0];
 
+            
+
             $logger = $this->logger;
+
+            $logger->log("Start time: " . strval($start_time));
 
             //Remove elements that are above limit count
             $data = array_slice($data, 0, $limit);
@@ -271,7 +275,11 @@
             //echo "count: " . var_dump($count);
             if($count){
                 $total += $count;
-                $logger->log($prefix . $count . " Products");
+                $ids = [];
+                foreach($response as $product){
+                    $ids[] = $product["id"];
+                }
+                $logger->log($prefix . $count . " Products: " . implode(", ", $ids));
             }
         }
 
