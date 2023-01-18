@@ -44,6 +44,10 @@
                 </div>
                 <br>
                 <button type='button' onclick='uploadMatches()' id='match-upload-submit'>Upload</button>
+
+                <span id='match-upload-neutral'></span>
+                <span id='match-upload-success' class='match-upload-success'></span>
+                <span id='match-upload-error' class='match-upload-error'></span>
             </form>
             <button id='cancel-button' type='button' onclick='cancel_upload()' style='display: none'>Cancel</button>
             
@@ -58,9 +62,7 @@
                 <span id='progress-end'></span><br>
                 <span>Time to complete: <span id='progress-end-time'></span> seconds<span><br>
             </div> -->
-            <span id='match-upload-neutral'></span>
-            <span id='match-upload-success' class='match-upload-success'></span>
-            <span id='match-upload-error' class='match-upload-error'></span>
+            
             <script src=" . $JS_UPLOAD_PAGE . "></script>
             ";
 
