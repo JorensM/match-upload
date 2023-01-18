@@ -17,3 +17,7 @@
     overflow-y: scroll;
     max-height: 800px;
 }
+
+.match-upload-error{
+    color: red;
+}

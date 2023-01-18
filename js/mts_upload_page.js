@@ -3,10 +3,10 @@
 // progress_div = null;
 // error_element = null;
 
-match_upload_form = document.getElementById("match-upload-form");
-cancel_button = document.getElementById("cancel-button");
-progress_div = document.getElementById("match-upload-progress");
-error_element = document.getElementById("match-upload-error")
+let match_upload_form = document.getElementById("match-upload-form");
+let cancel_button = document.getElementById("cancel-button");
+let progress_div = document.getElementById("match-upload-progress");
+let error_element = document.getElementById("match-upload-error")
 
 // function defineElements(){
 //     match_upload_form = document.getElementById("match-upload-form");
@@ -238,7 +238,7 @@ class UploadManager {
     }
 }
 
-let error_element = document.getElementById('match-upload-error');
+//let error_element = document.getElementById('match-upload-error');
 
 let progress_end_element = document.getElementById('progress-end');
 
@@ -252,7 +252,6 @@ let constants = [];
 let progressManager = new ProgressManager();
 
 window.onload = () => {
-    defineElements();
     get_constants()
     .then(_constants => {
         constants = _constants;
