@@ -5,20 +5,20 @@
     error_reporting(E_ALL);
 
     //Classes
-    require_once("classes/SessionDataManager.php");
-    require_once("classes/CsvToIDataConverter.php");
-    require_once("classes/UploadsManager.php");
-    require_once("classes/MatchObject.php");
-    require_once("classes/MatchObjectToProductImporter.php");
-    require_once("classes/MTSLogger.php");
-    require_once("classes/ProductImporter.php");
+    require_once("php/classes/SessionDataManager.php");
+    require_once("php/classes/CsvToIDataConverter.php");
+    require_once("php/classes/UploadsManager.php");
+    require_once("php/classes/MatchObject.php");
+    require_once("php/classes/MatchObjectToProductImporter.php");
+    require_once("php/classes/MTSLogger.php");
+    require_once("php/classes/ProductImporter.php");
 
     //Enums
-    require_once("classes/enum/EnumSessionDataElement.php");
+    require_once("php/classes/enum/EnumSessionDataElement.php");
 
     //Functions
-    require_once("functions/matchObjectToProductArrayMany.php");
-    require_once("functions/setProgressMessage.php");
+    require_once("php/functions/matchObjectToProductArrayMany.php");
+    require_once("php/functions/setProgressMessage.php");
 
     //echo "hello";
 
