@@ -8,7 +8,6 @@
 
     //Functions
     require_once("const.php");
-    require_once("update_product_visibility_fn.php");
     require_once("php/functions/getHiddenCategoryIds.php");
 
     //Init settings
@@ -124,7 +123,6 @@ function match_upload_options_html(){
     global $MISSING_FILES_URL;
     global $MISSING_DATA_URL;
     global $APPLY_SEO_URL;
-    global $UPDATE_PRODUCT_VISIBILITY_URL;
     global $SEARCH_DB_URL;
     global $SEARCH_SOURCE_URL;
 

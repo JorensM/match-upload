@@ -1,7 +1,7 @@
 <?php
 
     require_once("wp_init.php");
-    require_once("util.php");
+    require_once(__DIR__."/../functions/fileExistsOnUrl.php");
 
     $products = wc_get_products(array("limit" => -1));
 
@@ -35,7 +35,7 @@
 
         foreach($team_images as $team_image){
             
-            if(!file_exists_on_url($team_image)){
+            if(!fileExistsOnUrl($team_image)){
                 $filename = basename($team_image);
                 $skip = false;
                 foreach($missing_teams as $missing_team){
