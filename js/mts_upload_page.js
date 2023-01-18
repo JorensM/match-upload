@@ -11,6 +11,7 @@ let progress_message = document.getElementById("progress-message");
 let error_element = document.getElementById("match-upload-error");
 let success_element = document.getElementById("match-upload-success");
 let neutral_element = document.getElementById("match-upload-neutral");
+let progress_time = document.getElementById("progress-time");
 
 // function defineElements(){
 //     match_upload_form = document.getElementById("match-upload-form");
@@ -215,6 +216,7 @@ class ProgressManager {
         cancel_button.style.display = "flex";
         progress_div.style.display = "flex";
         progress_message.innerHTML = progress_data.message;
+        progress_time.innerHTML = (progress_data.end_time - progress_data.start_time) / 1000;
     }
 }
 
