@@ -4,8 +4,13 @@
 
     abstract class AbstractData implements IData {
 
+        /**
+         * Abstract Data class.
+         * 
+         * @var array $fields
+         * @var array $data
+         */
         private array $fields;
-
         public array $data;
 
         public function __construct(array $data){

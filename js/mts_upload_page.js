@@ -1,8 +1,6 @@
-// match_upload_form = null;
-// cancel_button = null;
-// progress_div = null;
-// error_element = null;
 
+//Element references
+//TODO: move them to the classes that use them
 let match_upload_form = document.getElementById("match-upload-form");
 let match_upload_form_submit_button = document.getElementById("match-upload-submit");
 let cancel_button = document.getElementById("cancel-button");
@@ -12,13 +10,6 @@ let error_element = document.getElementById("match-upload-error");
 let success_element = document.getElementById("match-upload-success");
 let neutral_element = document.getElementById("match-upload-neutral");
 let progress_time = document.getElementById("progress-time");
-
-// function defineElements(){
-//     match_upload_form = document.getElementById("match-upload-form");
-//     cancel_button = document.getElementById("cancel-button");
-//     progress_div = document.getElementById("match-upload-progress");
-//     error_element = document.getElementById("match-upload-error")
-// }
 
 /**
  * This class manages the display of progress data during upload as well as handles error display
@@ -86,15 +77,7 @@ class ProgressManager {
             fetch(request)
             .then(response => {return response.json()})
             .then(data => {
-            resolve(data);
-            // console.log('progress data: ');
-            // console.log(data);
-            // if(data.error){
-            //     progress_end_element.innerHTML = 'an error occured: <br>' + data.error_message;
-            //     clearInterval(interval);
-            // }else{
-            //     render_progress(data.message, data.started, data.finished, data.start_time, data.end_time);
-            // }
+                resolve(data);
         })
         .catch(err => {
             console.log('err');
@@ -111,8 +94,6 @@ class ProgressManager {
      * @param {ProgressManager} the_this should be passed the 'this' variable
      */
     renderProgress(the_this){
-        //console.log("This: ");
-        //console.log(this);
         console.log("rendering progress");
         the_this.getProgress()
         .then(progress_data => {
@@ -123,13 +104,12 @@ class ProgressManager {
             }else{
                 this.showProgressDiv(progress_data);
             }
-
-            //console.log("progress data: ");
-            //console.log(progress_data);
         })
         .catch(err => {
+
             console.error("Could not fetch progress data");
             console.error(err);
+
         });
     }
 
@@ -139,9 +119,11 @@ class ProgressManager {
      * @returns {void}
      */
     showUploadForm(){
+
         match_upload_form.style.display = "flex";
         cancel_button.style.display = "none";
         progress_div.style.display = "none";
+
     }
 
     /**
@@ -150,7 +132,9 @@ class ProgressManager {
      * @returns {void}
      */
     clearError(){
+
         error_element.innerHTML = "";
+
     }
 
     /**
@@ -159,9 +143,11 @@ class ProgressManager {
      * @param {string} str string to set the error message to
      */
     setError(str){
+
         this.clearNeutralMessage();
         this.clearSuccessMessage();
         error_element.innerHTML = str;
+
     }
 
     /**
@@ -170,7 +156,9 @@ class ProgressManager {
      * @returns {void}
      */
     clearSuccessMessage(){
+
         success_element.innerHTML = "";
+
     }
 
     /**
@@ -181,9 +169,11 @@ class ProgressManager {
      * @returns {void}
      */
     setSuccessMessage(str){
+
         this.clearNeutralMessage();
         this.clearError();
-        success_element.innerHTML = str
+        success_element.innerHTML = str;
+
     }
 
     /**
@@ -192,7 +182,9 @@ class ProgressManager {
      * @returns {void}
      */
     clearNeutralMessage(){
+
         neutral_element.innerHTML = "";
+
     }
 
     /**
@@ -201,9 +193,11 @@ class ProgressManager {
      * @param {string} str message
      */
     setNeutralMessage(str){
+
         this.clearError();
         this.clearSuccessMessage();
         neutral_element.innerHTML = str;
+
     }
 
     /**
@@ -212,11 +206,13 @@ class ProgressManager {
      * @param {Object} progress_data progress data
      */
     showProgressDiv(progress_data){
+
         match_upload_form.style.display = "none";
         cancel_button.style.display = "flex";
         progress_div.style.display = "flex";
         progress_message.innerHTML = progress_data.message;
         progress_time.innerHTML = progress_data.end_time - progress_data.start_time;
+
     }
 }
 
@@ -225,6 +221,11 @@ class ProgressManager {
  */
 class UploadManager {
 
+    /**
+     * constructor
+     * 
+     * @param {ProgressManager} progressManager reference to the ProgressManager instance
+     */
     constructor(progressManager){
         this.progressManager = progressManager;
     }
@@ -235,6 +236,7 @@ class UploadManager {
      * @returns {void}
      */
     uploadMatches(){
+
         this.progressManager.clearError();
 
         let file = document.getElementById('match-upload-file').files[0];
@@ -256,41 +258,33 @@ class UploadManager {
                 method: 'POST',
                 body: formData,
                 credentials: 'same-origin'
-                // headers: {
-                //     'Content-Type': 'multipart/form-data'
-                // }
             }
         )
-        
-        
-        //let interval = setInterval(get_progress, 1000);
-        //console.log('interval: ');
-        //console.log(interval);
-        
-        //clear_progress();
+
         this.progressManager.setNeutralMessage("Starting upload, please wait...");
+
         fetch(request)
         .then(response => {return response.json()})
         .then(data => {
+
             console.log(data);
+
             if(data.error !== ''){
+
                 this.progressManager.stopRenderProgress(data.error);
+
             }
             if(data.success){
+
                 this.progressManager.setSuccessMessage("upload complete!");
-                //progress_end_element.innerHTML = 'upload complete!';
+
             }
-            //clearInterval(interval);
-            //clear_progress();
-            //progress_end_element.innerHTML = 'sucessfully added products, you may now leave this page';
         })
         .catch(err => {
-            //console.log('ABCD');
+
             console.log(err);
             this.progressManager.stopRenderProgress("an error occured: " + err);
-            //clearInterval(interval);
-    
-            //progress_end_element.innerHTML = 'an error occured: ' + err;
+
         });
     }
 
@@ -298,25 +292,20 @@ class UploadManager {
      * Enable the submit button
      */
     enableSubmitButton(){
+
         match_upload_form_submit_button.disabled = false;
+
     }
 
     /**
      * Disable the submit button
      */
     disableSubmitButton(){
+
         match_upload_form_submit_button.disabled = true;
+
     }
 }
-
-//let error_element = document.getElementById('match-upload-error');
-
-//let progress_end_element = document.getElementById('progress-end');
-
-//progressDiv = document.getElementById('match-upload-progress');
-//progressDiv.style.display = 'none';
-
-//let interval;
 
 let constants = [];
 
@@ -328,12 +317,11 @@ uploadManager.disableSubmitButton();
 window.onload = () => {
     get_constants()
     .then(_constants => {
+        
         constants = _constants;
         uploadManager.enableSubmitButton();
         progressManager.init();
 
-        //interval = setInterval(get_progress, 1000);
-        //clear_progress();
     });
 }
 
@@ -349,6 +337,12 @@ function get_constants(){
         });
     })
     
+}
+
+function uploadMatches(){
+
+    uploadManager.uploadMatches();
+
 }
 
 function cancel_upload(){
@@ -367,151 +361,3 @@ function cancel_upload(){
     })
 }
 
-function uploadMatches(){
-
-    uploadManager.uploadMatches();
-
-    // error_element.innerHTML = '';
-    // let file = document.getElementById('match-upload-file').files[0];
-    // const write_logs = document.getElementById('write-logs').checked;
-
-    // if(file === undefined){
-    //     error_element.innerHTML = 'Please select a file';
-    //     return;
-    // }
-
-    // const formData = new FormData();
-    // formData.append('matches-file', file);
-    // console.log('write_logs: ');
-    // console.log(write_logs);
-    // formData.append('write-logs', write_logs);
-
-    // var request = new Request('" . $UPLOAD_MATCHES_ACTION_URL . "',
-    //     {
-    //         method: 'POST',
-    //         body: formData,
-    //         credentials: 'same-origin'
-    //         // headers: {
-    //         //     'Content-Type': 'multipart/form-data'
-    //         // }
-    //     }
-    // )
-    
-    
-    // //let interval = setInterval(get_progress, 1000);
-    // //console.log('interval: ');
-    // //console.log(interval);
-    
-    // //clear_progress();
-
-    // fetch(request)
-    // .then(response => {return response.json()})
-    // .then(data => {
-    //     console.log(data);
-    //     if(data.error !== ''){
-    //         progress_end_element.innerHTML = 'an error occured: <br>' + data.error;
-    //         clearInterval(interval);
-    //     }
-    //     if(data.success){
-    //         progress_end_element.innerHTML = 'upload complete!';
-    //     }
-    //     //clearInterval(interval);
-    //     //clear_progress();
-    //     //progress_end_element.innerHTML = 'sucessfully added products, you may now leave this page';
-    // })
-    // .catch(err => {
-    //     //console.log('ABCD');
-    //     console.log(err);
-    //     clearInterval(interval);
-
-    //     progress_end_element.innerHTML = 'an error occured: ' + err;
-    // });
-}
-
-
-
-function get_progress(){
-    var request = new Request(constants.endpoints.load_progress,
-        {
-            method: 'POST',
-            credentials: 'same-origin'
-        }
-    )
-    return new Promise((resolve, reject) => {
-        fetch(request)
-        .then(response => {return response.json()})
-        .then(data => {
-        resolve(data);
-        // console.log('progress data: ');
-        // console.log(data);
-        // if(data.error){
-        //     progress_end_element.innerHTML = 'an error occured: <br>' + data.error_message;
-        //     clearInterval(interval);
-        // }else{
-        //     render_progress(data.message, data.started, data.finished, data.start_time, data.end_time);
-        // }
-    })
-    .catch(err => {
-        console.log('err');
-        console.log(err);
-        reject(err);
-    });
-    })
-    
-}
-
-function render_progress(message, started, finished, start_time, end_time){
-    indexElement = document.getElementById('progress-index');
-    titleElement = document.getElementById('progress-title');
-    statusElement = document.getElementById('progress-status');
-    cancelButton = document.getElementById('cancel-button');
-    progressTimeElement = document.getElementById('progress-time');
-    progressEndDiv = document.getElementById('match-upload-end');
-    messageElement = document.getElementById('progress-message');
-    
-
-    progressEndDiv.style.display = 'none';
-
-    console.log(start_time);
-    console.log(end_time);
-
-    progressEndTimeElement = document.getElementById('progress-end-time');
-
-    if(finished){
-        progressEndDiv.style.display = 'flex';
-        document.getElementById('progress-end').innerHTML = 'Upload complete!';
-        cancelButton.style.display = 'none';
-        matchUploadForm.style.display = 'flex';
-        progressEndTimeElement.innerHTML = end_time - start_time;
-        progressDiv.style.display = 'none';
-    }
-    if(started){
-        progressDiv.style.display = 'flex';
-        cancelButton.style.display = 'block';
-        matchUploadForm.style.display = 'none';
-        messageElement.innerHTML = message;
-        //document.getElementById('progress-index').innerHTML = index;
-        //document.getElementById('progress-title').innerHTML = title;
-        if(status === true){
-            //document.getElementById('progress-status').innerHTML = 'Product doesn\'t exist, adding';
-        }else{
-            //document.getElementById('progress-status').innerHTML = 'Product already exists, updating';
-        }
-
-        progressTimeElement.innerHTML = end_time - start_time;
-    }else{
-        cancelButton.style.display = 'none';
-        indexElement.innerHTML = '';
-        titleElement.innerHTML = '';
-        statusElement.innerHTML = '';
-        matchUploadForm.style.display = 'flex';
-    }
-    
-}
-
-function clear_progress(){
-    document.getElementById('progress-index').innerHTML = '';
-    document.getElementById('progress-title').innerHTML = '';
-    document.getElementById('progress-status').innerHTML = '';
-    progress_end_element.innerHTML = '';
-}

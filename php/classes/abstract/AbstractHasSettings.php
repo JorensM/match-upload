@@ -5,6 +5,12 @@
 
     abstract class AbstractHasSettings implements IHasSettings {
 
+        /**
+         * An abstract class for classes that have settings
+         * 
+         * @var ISettings $settings settings
+         */
+
         private ISettings $settings;
 
         protected function initSettings(){
