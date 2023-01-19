@@ -8,7 +8,7 @@
     $WOO_API_USER = "ck_0a3df38292cd32c486ce2a1ddda2f950890f8ed5";
     $WOO_API_PASS = "cs_de6dbb7da6ed66a50de75b56c686044fc9193c7f";
 
-    $UPLOAD_MATCHES_ACTION_URL = plugin_dir_url(__FILE__) . "upload_matches.php";
+    $UPLOAD_MATCHES_ACTION_URL = plugin_dir_url(__FILE__) . "php/endpoints/upload_matches.php";
     $LOAD_PROGRESS_URL = plugin_dir_url(__FILE__) . "get_load_progress.php";
     $CANCEL_URL = plugin_dir_url(__FILE__) . "php/endpoints/cancel_upload.php";
     $LOGS_URL = plugin_dir_url(__FILE__) . "get_logs.php";

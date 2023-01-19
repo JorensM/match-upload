@@ -163,6 +163,30 @@
                 $this->logCount("update", "Updated ", $total_updated, $response, $logger);
                 $this->logCount("delete", "Deleted ", $total_deleted, $response, $logger);
 
+
+                //Determine the ids that were requested to be affected
+                $to_be_affected_ids = [];
+                $to_update_ids = array_column($entries_to_update, "id");
+                array_push($to_be_affected_ids, $to_update_ids);
+                array_push($to_be_affected_ids, $entries_to_delete);
+
+                //Determine the ids that were actually affected
+                $keys = ["update", "delete", "create"];
+                $affected_ids = [];
+                foreach($keys as $key){
+                    if(isset($response[$key])){
+                        foreach($response[$key] as $entry){
+                            $affected_ids[] = $entry["id"];
+                        }
+                    }
+                }
+
+                //Determine the ids that were skipped
+                $skipped_ids = array_diff($to_be_affected_ids, $affected_ids);
+
+                //Log skipped ids
+                $logger->log("Skipped products: " . implode(", ", $skipped_ids));
+
                 
 
                 // if($entries_created_count){
