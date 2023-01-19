@@ -181,11 +181,14 @@
                     }
                 }
 
+                $logger->log("to be affected ids: " . print_r($to_be_affected_ids, true));
+                $logger->log("affected ids: " . print_r($affected_ids, true));
+
                 //Determine the ids that were skipped
                 $skipped_ids = array_diff($to_be_affected_ids, $affected_ids);
 
                 //Log skipped ids
-                $logger->log("Skipped products: " . implode(", ", $skipped_ids));
+                $logger->log("Skipped products: " . print_r($skipped_ids, true));//implode(", ", $skipped_ids));
 
                 
 

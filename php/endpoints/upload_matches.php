@@ -5,20 +5,19 @@
     error_reporting(E_ALL);
 
     //Classes
-    require_once("php/classes/SessionDataManager.php");
-    require_once("php/classes/CsvToIDataConverter.php");
-    require_once("php/classes/UploadsManager.php");
-    require_once("php/classes/MatchObject.php");
-    require_once("php/classes/MatchObjectToProductImporter.php");
-    require_once("php/classes/MTSLogger.php");
-    require_once("php/classes/ProductImporter.php");
+    require_once(__DIR__."/../classes/SessionDataManager.php");
+    require_once(__DIR__."/../classes/CsvToIDataConverter.php");
+    require_once(__DIR__."/../classes/UploadsManager.php");
+    require_once(__DIR__."/../classes/MatchObject.php");
+    require_once(__DIR__."/../classes/MTSLogger.php");
+    require_once(__DIR__."/../classes/ProductImporter.php");
 
     //Enums
-    require_once("php/classes/enum/EnumSessionDataElement.php");
+    require_once(__DIR__."/../classes/enum/EnumSessionDataElement.php");
 
     //Functions
-    require_once("php/functions/matchObjectToProductArrayMany.php");
-    require_once("php/functions/setProgressMessage.php");
+    require_once(__DIR__."/../functions/matchObjectToProductArrayMany.php");
+    require_once(__DIR__."/../functions/setProgressMessage.php");
 
     //echo "hello";
 
@@ -250,7 +249,10 @@
     // }
 
     //MatcheObjects converted into arrays supported by ProductImporter
-    $matches_products_arr = matchObjectToProductArrayMany($matches_arr, 40);
+    if(is_array($matches_arr)){
+        $matches_products_arr = matchObjectToProductArrayMany($matches_arr, 40);
+    }
+    
 
     //printRPre(json_encode($matches_products_arr));
 

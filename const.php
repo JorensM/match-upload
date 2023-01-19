@@ -11,7 +11,7 @@
     $UPLOAD_MATCHES_ACTION_URL = plugin_dir_url(__FILE__) . "php/endpoints/upload_matches.php";
     $LOAD_PROGRESS_URL = plugin_dir_url(__FILE__) . "php/endpoints/get_load_progress.php";
     $CANCEL_URL = plugin_dir_url(__FILE__) . "php/endpoints/cancel_upload.php";
-    $LOGS_URL = plugin_dir_url(__FILE__) . "get_logs.php";
+    $LOGS_URL = plugin_dir_url(__FILE__) . "php/endpoints/get_logs.php";
     $MISSING_FILES_URL = plugin_dir_url(__FILE__) . "php/endpoints/view_missing_files.php";
     $MISSING_DATA_URL = plugin_dir_url(__FILE__) . "php/endpoints/view_missing_data.php";
     $APPLY_SEO_URL = plugin_dir_url(__FILE__) . "apply_seo.php";
