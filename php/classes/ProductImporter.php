@@ -167,8 +167,8 @@
                 //Determine the ids that were requested to be affected
                 $to_be_affected_ids = [];
                 $to_update_ids = array_column($entries_to_update, "id");
-                array_push($to_be_affected_ids, $to_update_ids);
-                array_push($to_be_affected_ids, $entries_to_delete);
+                $to_be_affected_ids = array_merge($to_be_affected_ids, $to_update_ids);
+                $to_be_affected_ids = array_merge($to_be_affected_ids, $entries_to_delete);
 
                 //Determine the ids that were actually affected
                 $keys = ["update", "delete", "create"];
