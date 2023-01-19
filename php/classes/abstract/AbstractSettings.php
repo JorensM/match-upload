@@ -4,20 +4,44 @@
 
     abstract class AbstractSettings implements ISettings {
 
+        /**
+         * Abstract settings class
+         * 
+         * @var array $settings settings themselves
+         * 
+         * @var array $required_fields fields that are required
+         */
+
         private array $settings;
 
         protected array $required_fields = [];
-
         protected array $schema;
 
+        /**
+         * Set settings
+         * 
+         * @param array $settings new settings
+         * 
+         * @return void
+         */
         public function set(array $settings){
             $this->settings = $settings;
         }
 
+        /**
+         * Get settings
+         * 
+         * @return array current settings
+         */
         public function get(){
             return $this->settings;
         }
 
+        /**
+         * Validate required settings. Throws error if required settings are missing
+         * 
+         * @return true if required settings are set. Throws error if required settings are missing
+         */
         public function validateRequired(){
             $settings = $this->get();
 
@@ -29,7 +53,6 @@
 
                 if(!$is_required_setting_set){
                     array_push($missing_settings, $required_field);
-                    //throw new MyException("Missing required setting")
                 }
             }
 

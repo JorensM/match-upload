@@ -5,24 +5,25 @@
 
     abstract class AbstractImporter extends AbstractHasSettings implements IIimporter{
 
-        private ISettings $_settings;
+        /**
+         * Abstract importer class
+         * 
+         * 
+         */
 
         public function __construct(array $settings){
-            //$this->_settings = $this->generateSettingsObject();
+
             $this->initSettings();
             $this->setSettings($settings);
+
         }
 
         public function import($data, ...$args){
+
             $this->validateAction($data);
             return $this->importAction($data, ...$args);
+
         }
-
-        //public function &settings(){
-            //return $this->_settings;
-        //}
-
-        //abstract protected function generateSettingsObject();
         
         /**
          * Import action that will be called by import().

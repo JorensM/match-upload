@@ -2,9 +2,9 @@
 
     interface IHasSettings {
 
-        // /**
-        //  * Interface for classes that have settings
-        //  */
+        /**
+         * Interface for classes that have settings
+         */
 
         /**
          * Sets settings

@@ -22,6 +22,9 @@
         $product_description = $matchObject->generateDescription();
         $team_images = $matchObject->generateTeamImageFilenames();
 
+        $match_date_obj = strtotime($matchObject->get("match_date"));
+        $match_date = date("Y-m-d", $match_date_obj);
+
         $output_array = [
             "enable" => $matchObject->isEnabled(),
             "title" => $matchObject->generateMatchTitle(),
@@ -34,7 +37,7 @@
                 generateMetafield("1st-team-image", $team_images[0]),
                 generateMetafield("2nd-team-image", $team_images[1]),
                 generateMetafield("tickets_products-page-short-details", $product_description),
-                generateMetafield("match-date", $matchObject->get("match_date")),
+                generateMetafield("match-date", $match_date),
                 generateMetafield("match-location", $matchObject->get("stadium")),
                 generateMetafield("championship-name", $matchObject->get("tournament")),
                 generateMetafield("date-confirm", $matchObject->get("match_fixed")),
