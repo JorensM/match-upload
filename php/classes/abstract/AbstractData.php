@@ -13,6 +13,11 @@
         private array $fields;
         public array $data;
 
+        /**
+         * Constructor
+         * 
+         * @param array $data data
+         */
         public function __construct(array $data){
 
             $this->data = $data;

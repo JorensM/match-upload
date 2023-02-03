@@ -10,6 +10,7 @@
          * 
          * 
          */
+        private ISettings $_settings;
 
         public function __construct(array $settings){
 

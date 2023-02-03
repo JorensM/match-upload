@@ -72,6 +72,7 @@
             $total_updated = 0;
             $total_created = 0;
             $total_deleted = 0;
+            $total_skipped = 0;
 
             $logger->log("Will import $data_count products");
             $logger->log("");
@@ -185,7 +186,11 @@
                 $skipped_ids = array_diff($to_be_affected_ids, $affected_ids);
 
                 //Log skipped ids
-                $logger->log("Skipped products: " . implode(", ", $skipped_ids));
+                if(count($skipped_ids) > 0){
+                    $logger->log("Skipped products: " . implode(", ", $skipped_ids));
+                    $total_skipped += count($skipped_ids);
+                }
+                
 
                 
 
@@ -272,6 +277,7 @@
             $logger->log("Total created: $total_created");
             $logger->log("Total updated: $total_updated");
             $logger->log("Total deleted: $total_deleted");
+            $logger->log("Total skipped: $total_skipped");
 
             
         }

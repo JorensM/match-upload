@@ -56,6 +56,9 @@
          */
         public function bulkUpdateProducts(array $products_to_create, array $products_to_update, array $products_to_delete);
 
+        /**
+         * Get product variation by its name
+         */
         public function getVariationByName($product_id, string $variation_name);
 
         public function updateProductVariation($product_id, $variation_name, array $params);
